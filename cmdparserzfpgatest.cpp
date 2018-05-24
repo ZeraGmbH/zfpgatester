@@ -1,0 +1,122 @@
+#include "cmdparserzfpgatest.h"
+
+CmdParserZfpgaTest::CmdParserZfpgaTest(QObject *parent) : QSimpleCmdParserSocketBase(parent)
+{
+    /* Read: Read data from FPGA */
+    /* Parameters: strHexAddress, iLen */
+    /* Result: strHexData */
+    AddCmdInfo("Read",
+               CmdParamTypeIdList() << PARAM_TYPE_STRING << PARAM_TYPE_INT,
+               CMD_ZFPGATEST_READ,
+               true,
+               QLatin1String("Param: strHexAddress, iLen\nResult strHexData"));
+
+    /* Write: Write data to FPGA */
+    /* Parameters: strHexAddress, strHexData */
+    /* Result: None */
+    AddCmdInfo("Write",
+               CmdParamTypeIdList() << PARAM_TYPE_STRING << PARAM_TYPE_STRING,
+               CMD_ZFPGATEST_WRITE,
+               true,
+               QLatin1String("Param: strHexAddress, strHexData"));
+
+}
+
+static void AppendErr(QString& strErrInfo, const QString& strCurrError)
+{
+    if(strErrInfo.isEmpty())
+        strErrInfo = strCurrError;
+    else
+        strErrInfo += QLatin1String(" / ")+strCurrError;
+}
+
+const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVariantList &params)
+{
+    QString strRet;
+    QString strCurrError, strErrInfo;
+    QString strAddrHex;
+    quint32 ui32Address;
+    quint32 ui32Len;
+    const quint32 ui32MaxAddress = (1<<16);
+    bool bConversionOK = true;
+    switch(pCmd->GetCmdID())
+    {
+    case CMD_ZFPGATEST_READ:
+        strAddrHex = params[0].toString();
+        ui32Len = params[1].toInt();
+        ui32Address = strAddrHex.toInt(&bConversionOK, 16);
+        if(bConversionOK)
+        {
+            // ensure aligned address
+            if(ui32Address % 4)
+            {
+                strCurrError = QString("Hex address %1 is not 32bit aligned").arg(strAddrHex);
+                AppendErr(strErrInfo, strCurrError);
+            }
+            // ensure aligned len
+            if(ui32Len % 4)
+            {
+                strCurrError = QString("Length %1 is not 32bit aligned").arg(ui32Len);
+                AppendErr(strErrInfo, strCurrError);
+            }
+            // check address / len limits
+            if(ui32Address + ui32Len > ui32MaxAddress)
+            {
+                strCurrError.sprintf("Maximum address accessed 0x%04X exceeds maximum 0x%04X",
+                                   ui32Address + ui32Len, ui32MaxAddress);
+                AppendErr(strErrInfo, strCurrError);
+            }
+        }
+        else
+            strErrInfo = QString("Invalid hex address: %1").arg(strAddrHex);
+
+        if(!strErrInfo.isEmpty())
+            strRet = FormatErrorMsg(pCmd->GetDisplayStr(), strErrInfo);
+        break;
+    case CMD_ZFPGATEST_WRITE:
+        strAddrHex = params[0].toString();
+        ui32Address = strAddrHex.toInt(&bConversionOK, 16);
+        if(bConversionOK)
+        {
+            // ensure aligned address
+            if(ui32Address % 4)
+            {
+                strCurrError = QString("Hex address %1 is not 32bit aligned").arg(strAddrHex);
+                AppendErr(strErrInfo, strCurrError);
+            }
+            // ensure aligned data
+            QString strData = params[1].toString().replace(QLatin1String(" "), QString());
+            if(strData.size()%8 != 0)
+            {
+                strCurrError = QString("Write data %1 does not contain 32bit values only").arg(params[1].toString());
+                AppendErr(strErrInfo, strCurrError);
+            }
+            // check correct hex for data
+            bConversionOK = true;
+            for(int iDigit=0; iDigit<strData.size() && bConversionOK; iDigit++)
+            {
+                strData.mid(iDigit, 1).toInt(&bConversionOK, 16);
+            }
+            if(!bConversionOK)
+            {
+                strCurrError = QString("Write data %1 is not valid hexadecimal").arg(params[1].toString());
+                AppendErr(strErrInfo, strCurrError);
+            }
+            // check address / datalen limits
+            ui32Len = strData.size() / 2;
+            if(ui32Address + ui32Len > ui32MaxAddress)
+            {
+                strCurrError.sprintf("Maximum address accessed 0x%04X exceeds maximum 0x%04X",
+                                   ui32Address + ui32Len, ui32MaxAddress);
+                AppendErr(strErrInfo, strCurrError);
+            }
+        }
+        else
+            strErrInfo = QString("Invalid hex address: %1").arg(strAddrHex);
+
+        if(!strErrInfo.isEmpty())
+            strRet = FormatErrorMsg(pCmd->GetDisplayStr(), strErrInfo);
+        break;
+    }
+    return strRet;
+}
