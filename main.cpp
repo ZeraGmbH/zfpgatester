@@ -1,16 +1,18 @@
+#include "globals.h"
+#include "cmdparserzfpgatest.h"
+#include "cmdhandlerzfpgatest.h"
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QDebug>
 #include <QObject>
 #include <QTimer>
-#include <QFile>
 #include <QFileInfo>
 #include <QSimpleCmdServer>
-#include "globals.h"
-#include "cmdparserzfpgatest.h"
-#include "cmdhandlerzfpgatest.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
-QFile gDeviceFile;
+int gDeviceFd = 0;
 
 int main(int argc, char *argv[])
 {
@@ -63,8 +65,8 @@ int main(int argc, char *argv[])
     QFileInfo check_dev_file(strDevFile);
     if(check_dev_file.exists())
     {
-        gDeviceFile.setFileName(strDevFile);
-        if(!gDeviceFile.open(QIODevice::ReadWrite | QIODevice::Unbuffered))
+        gDeviceFd = open(strDevFile.toLatin1(), O_RDWR);
+        if(gDeviceFd < 0)
         {
             QString strMsg = QString(QLatin1String("Could not open device file %1")).arg(strDevFile);
             parserZfpgaTest.SetGlobalOutOfOrderMessage(strMsg);

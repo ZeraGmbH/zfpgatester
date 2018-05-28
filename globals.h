@@ -3,6 +3,6 @@
 
 #include <QFile>
 
-extern QFile gDeviceFile;
+extern int gDeviceFd;
 
 #endif // GLOBALS_H
