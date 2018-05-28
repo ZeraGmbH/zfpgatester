@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QTimer>
 #include <QFile>
+#include <QFileInfo>
 #include <QSimpleCmdServer>
 #include "globals.h"
 #include "cmdparserzfpgatest.h"
@@ -59,10 +60,21 @@ int main(int argc, char *argv[])
     QSimpleCmdParserSocketBase::SetCmdLogGlobal(iVerboseLevel >= 1);
 
     // Open device file
-    gDeviceFile.setFileName(strDevFile);
-    if(!gDeviceFile.open(QIODevice::ReadWrite | QIODevice::Unbuffered))
+    QFileInfo check_dev_file(strDevFile);
+    if(check_dev_file.exists())
     {
-        QString strMsg = QString(QLatin1String("Could not open device file %1")).arg(strDevFile);
+        gDeviceFile.setFileName(strDevFile);
+        if(!gDeviceFile.open(QIODevice::ReadWrite | QIODevice::Unbuffered))
+        {
+            QString strMsg = QString(QLatin1String("Could not open device file %1")).arg(strDevFile);
+            parserZfpgaTest.SetGlobalOutOfOrderMessage(strMsg);
+            qWarning(qPrintable(strMsg));
+        }
+
+    }
+    else
+    {
+        QString strMsg = QString(QLatin1String("Device file %1 does not exist")).arg(strDevFile);
         parserZfpgaTest.SetGlobalOutOfOrderMessage(strMsg);
         qWarning(qPrintable(strMsg));
     }
