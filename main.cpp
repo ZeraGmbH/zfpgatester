@@ -20,11 +20,11 @@ int main(int argc, char *argv[])
     cmdLineParser.addHelpOption();
 
     // command line parameters
-    QCommandLineOption optPortNo(QStringList() << "p" << "port", "IP-Port server opens", "ip-port");
+    QCommandLineOption optPortNo(QStringList() << "p" << "port", "IP-Port server opens (default: 5000)", "ip-port");
     optPortNo.setDefaultValue("5000");
     cmdLineParser.addOption(optPortNo);
-    QCommandLineOption optDevFile(QStringList() << "d" << "devicefile", "Device file to open", "filename");
-    optDevFile.setDefaultValue("/dev/zFPGA1debug");
+    QCommandLineOption optDevFile(QStringList() << "d" << "devicefile", "Device file to open (default: /dev/zFPGA1dbg)", "filename");
+    optDevFile.setDefaultValue("/dev/zFPGA1dbg");
     cmdLineParser.addOption(optDevFile);
     QCommandLineOption optVerboseLevel(QStringList() << "v" << "verbose", "Verbose level", "verbose-level");
     optVerboseLevel.setDefaultValue("0");
