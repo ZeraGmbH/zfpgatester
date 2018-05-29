@@ -25,7 +25,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
     case CMD_ZFPGATEST_READ:
         strAddrHex = params[0].toString();
         ui32Address = strAddrHex.toInt(Q_NULLPTR, 16);
-        if (lseek(gDeviceFd, ui32Address, 0) < 0 )
+        if (lseek(gDeviceFd, ui32Address, SEEK_SET) < 0 )
         {
             emit OperationFinish(true, QLatin1String("lseek did not succeed"));
             return;
@@ -49,7 +49,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
     case CMD_ZFPGATEST_WRITE:
         strAddrHex = params[0].toString();
         ui32Address = strAddrHex.toInt(Q_NULLPTR, 16);
-        if (lseek(gDeviceFd, ui32Address, 0) < 0 )
+        if (lseek(gDeviceFd, ui32Address, SEEK_SET) < 0 )
         {
             emit OperationFinish(true, QLatin1String("lseek did not succeed"));
             return;
