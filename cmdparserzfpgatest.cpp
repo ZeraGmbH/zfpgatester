@@ -36,7 +36,7 @@ CmdParserZfpgaTest::CmdParserZfpgaTest(QObject *parent) : QSimpleCmdParserSocket
                CmdParamTypeIdList() << PARAM_TYPE_STRING << PARAM_TYPE_STRING,
                CMD_ZFPGATEST_WRITE_ASCII,
                true,
-               QLatin1String("Param: strHexAddress, strAsciiData\nstrAsciiData supports \\\\ \\n \\r \\t \\0 \\,"));
+               QLatin1String("Param: strHexAddress, strAsciiData\nstrAsciiData: ") + BinaryConversionHelpString());
 }
 
 static void AppendErr(QString& strErrInfo, const QString& strCurrError)
