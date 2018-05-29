@@ -52,14 +52,13 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         {
             for(int iByte=0; iByte<readData.size(); iByte++)
             {
-                if(((QChar)readData[iByte]).isPrint())
+                if((quint8)readData[iByte] >= 32 && (quint8)readData[iByte] < 127)
                 {
                     strByteData.sprintf("%c", (int)readData[iByte]);
                 }
                 else
                 {
                     strByteData.sprintf("<0x%02X>", (quint8)readData[iByte]);
-
                 }
                 strResult += strByteData;
             }
