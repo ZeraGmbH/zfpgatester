@@ -114,12 +114,7 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
                     AppendErr(strErrInfo, strCurrError);
                 }
                 // check correct hex for data
-                bConversionOK = true;
-                for(int iDigit=0; iDigit<strData.size() && bConversionOK; iDigit++)
-                {
-                    strData.mid(iDigit, 1).toInt(&bConversionOK, 16);
-                }
-                if(!bConversionOK)
+                if(!isValidHexValue(strData, 0))
                 {
                     strCurrError = QString("Write data %1 is not valid hexadecimal").arg(params[1].toString());
                     AppendErr(strErrInfo, strCurrError);
