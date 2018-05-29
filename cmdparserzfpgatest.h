@@ -8,6 +8,8 @@ enum CmdZfpgaTestCmdIds
 {
     CMD_ZFPGATEST_READ = 1,
     CMD_ZFPGATEST_WRITE,
+    CMD_ZFPGATEST_READ_ASCII,
+    CMD_ZFPGATEST_WRITE_ASCII,
 };
 
 class CmdParserZfpgaTest : public QSimpleCmdParserSocketBase

@@ -20,6 +20,23 @@ CmdParserZfpgaTest::CmdParserZfpgaTest(QObject *parent) : QSimpleCmdParserSocket
                true,
                QLatin1String("Param: strHexAddress, strHexData"));
 
+    /* ReadAscii: Read data from FPGA displayed as ASCII */
+    /* Parameters: strHexAddress, iLen */
+    /* Result: strAsciiData */
+    AddCmdInfo("ReadAscii",
+               CmdParamTypeIdList() << PARAM_TYPE_STRING << PARAM_TYPE_INT,
+               CMD_ZFPGATEST_READ_ASCII,
+               true,
+               QLatin1String("Param: strHexAddress, iLen\nResult strAsciiData"));
+
+    /* WriteAscii: Write Ascii data to FPGA */
+    /* Parameters: strHexAddress, strAsciData */
+    /* Result: None */
+    AddCmdInfo("WriteAscii",
+               CmdParamTypeIdList() << PARAM_TYPE_STRING << PARAM_TYPE_STRING,
+               CMD_ZFPGATEST_WRITE_ASCII,
+               true,
+               QLatin1String("Param: strHexAddress, strAsciiData\nstrAsciiData supports \\\\ \\n \\r \\t \\0 \\,"));
 }
 
 static void AppendErr(QString& strErrInfo, const QString& strCurrError)
@@ -42,6 +59,7 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
     switch(pCmd->GetCmdID())
     {
     case CMD_ZFPGATEST_READ:
+    case CMD_ZFPGATEST_READ_ASCII:
         strAddrHex = params[0].toString();
         ui32Len = params[1].toInt();
         ui32Address = strAddrHex.toInt(&bConversionOK, 16);
@@ -74,6 +92,7 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
             strRet = FormatErrorMsg(pCmd->GetDisplayStr(), strErrInfo);
         break;
     case CMD_ZFPGATEST_WRITE:
+    case CMD_ZFPGATEST_WRITE_ASCII:
         strAddrHex = params[0].toString();
         ui32Address = strAddrHex.toInt(&bConversionOK, 16);
         if(bConversionOK)
@@ -84,26 +103,41 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
                 strCurrError = QString("Hex address %1 is not 32bit aligned").arg(strAddrHex);
                 AppendErr(strErrInfo, strCurrError);
             }
-            // ensure aligned data
-            QString strData = params[1].toString().replace(QLatin1String(" "), QString());
-            if(strData.size()%8 != 0)
+            if(pCmd->GetCmdID() == CMD_ZFPGATEST_WRITE)
             {
-                strCurrError = QString("Write data %1 does not contain 32bit values only").arg(params[1].toString());
-                AppendErr(strErrInfo, strCurrError);
+                QString strData;
+                // ensure aligned data
+                strData = params[1].toString().replace(QLatin1String(" "), QString());
+                if(strData.size()%8 != 0)
+                {
+                    strCurrError = QString("Write data %1 does not contain 32bit values only").arg(params[1].toString());
+                    AppendErr(strErrInfo, strCurrError);
+                }
+                // check correct hex for data
+                bConversionOK = true;
+                for(int iDigit=0; iDigit<strData.size() && bConversionOK; iDigit++)
+                {
+                    strData.mid(iDigit, 1).toInt(&bConversionOK, 16);
+                }
+                if(!bConversionOK)
+                {
+                    strCurrError = QString("Write data %1 is not valid hexadecimal").arg(params[1].toString());
+                    AppendErr(strErrInfo, strCurrError);
+                }
+                ui32Len = strData.size() / 2;
             }
-            // check correct hex for data
-            bConversionOK = true;
-            for(int iDigit=0; iDigit<strData.size() && bConversionOK; iDigit++)
+            else // Ascii
             {
-                strData.mid(iDigit, 1).toInt(&bConversionOK, 16);
-            }
-            if(!bConversionOK)
-            {
-                strCurrError = QString("Write data %1 is not valid hexadecimal").arg(params[1].toString());
-                AppendErr(strErrInfo, strCurrError);
+                // ensure aligned data
+                QByteArray data = BinaryFromAscii(params[1].toString());
+                if(data.size()%4 != 0)
+                {
+                    strCurrError = QString("Write data %1 does not contain multiple 4byte-blocks").arg(params[1].toString());
+                    AppendErr(strErrInfo, strCurrError);
+                }
+                ui32Len = data.size();
             }
             // check address / datalen limits
-            ui32Len = strData.size() / 2;
             if(ui32Address + ui32Len > ui32MaxAddress)
             {
                 strCurrError.sprintf("Maximum address accessed 0x%04X exceeds maximum 0x%04X",
