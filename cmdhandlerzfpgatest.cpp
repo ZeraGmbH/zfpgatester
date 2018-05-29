@@ -79,6 +79,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         {
             QString strData;
             strData = params[1].toString().replace(QLatin1String(" "), QString());
+            ui32Len = strData.size() / 2;
             for(quint32 ui32Byte=0; ui32Byte<ui32Len; ui32Byte++)
             {
                 writeData.append(strData.mid(ui32Byte*2, 2).toInt(Q_NULLPTR, 16));
@@ -87,8 +88,8 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         else
         {
             writeData = QSimpleCmdParserBase::BinaryFromAscii(params[1].toString());
+            ui32Len = writeData.size();
         }
-        ui32Len = writeData.size();
         if(write(gDeviceFd, writeData.data(), ui32Len) < 0)
             emit OperationFinish(true, QLatin1String("write did not succeed"));
         else
