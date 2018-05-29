@@ -60,7 +60,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         {
             writeData.append(strData.mid(ui32Byte*2, 2).toInt(Q_NULLPTR, 16));
         }
-        if(write(gDeviceFd, readData.data(), ui32Len) < 0)
+        if(write(gDeviceFd, writeData.data(), ui32Len) < 0)
             emit OperationFinish(true, QLatin1String("read did not succeed"));
         else
             emit OperationFinish(false, QString());
