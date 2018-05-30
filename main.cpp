@@ -81,17 +81,11 @@ int main(int argc, char *argv[])
         qWarning(qPrintable(strMsg));
     }
 
-    // Ensure event loop up
-    QTimer::singleShot(300,[&]
-                       ()
-
-    {
-        // start server
-        if(serverZfpgaTest.Setup(iPortNo, &parserZfpgaTest))
-            qInfo("Opened FPGA I/O server on port %u", iPortNo);
-        else
-            qWarning("FPGA I/O server does not listen on %u", iPortNo);
-    });
+    // start server
+    if(serverZfpgaTest.Setup(iPortNo, &parserZfpgaTest))
+        qInfo("Opened FPGA I/O server on port %u", iPortNo);
+    else
+        qWarning("FPGA I/O server does not listen on %u", iPortNo);
 
     return a.exec();
 }
