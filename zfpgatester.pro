@@ -28,5 +28,5 @@ exists(localpaths.user.pri) {
     include(localpaths.user.pri)
 }
 
-VERSION = 0.0.3
+VERSION = 0.1.0
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
