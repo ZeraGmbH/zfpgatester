@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
         {
             QString strMsg = QString(QLatin1String("Could not open device file %1")).arg(strDevFile);
             parserZfpgaTest.SetGlobalOutOfOrderMessage(strMsg);
-            qWarning(qPrintable(strMsg));
+            qWarning(qPrintable(strMsg), "");
         }
 
     }
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     {
         QString strMsg = QString(QLatin1String("Device file %1 does not exist")).arg(strDevFile);
         parserZfpgaTest.SetGlobalOutOfOrderMessage(strMsg);
-        qWarning(qPrintable(strMsg));
+        qWarning(qPrintable(strMsg), "");
     }
 
     // start server
