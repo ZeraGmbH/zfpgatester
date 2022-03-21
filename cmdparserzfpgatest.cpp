@@ -54,7 +54,7 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
     QString strAddrHex;
     quint32 ui32Address;
     quint32 ui32Len;
-    const quint32 ui32MaxAddress = (1<<16);
+    const quint32 ui32MaxAddress = (1<<19);
     bool bConversionOK = true;
     switch(pCmd->GetCmdID())
     {
