@@ -23,7 +23,7 @@ include(GNUInstallDirs)
 
 #Find dependecies
 find_package(Qt5 COMPONENTS Core Network CONFIG REQUIRED)
-find_package(SimpleCmdioBase REQUIRED)
+find_package(simplecmdiobase REQUIRED)
 
 #sum up project Files 
 set(SOURCES
