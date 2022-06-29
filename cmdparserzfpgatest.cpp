@@ -37,6 +37,15 @@ CmdParserZfpgaTest::CmdParserZfpgaTest(QObject *parent) : QSimpleCmdParserSocket
                CMD_ZFPGATEST_WRITE_ASCII,
                true,
                QLatin1String("Param: strHexAddress, strAsciiData\nstrAsciiData: ") + BinaryConversionHelpString());
+
+    /* ReadTimingMeasurement: Read fixed amount of data from FPGA */
+    /* Parameters: none */
+    /* Result: strHexData */
+    AddCmdInfo("ReadPerformanceTest",
+               CmdParamTypeIdList(),
+               CMD_ZFPGATEST_READ_TIMING_MEASUREMENT,
+               true,
+               QLatin1String("Param: strHexAddress, iLen\nResult strHexData"));
 }
 
 static void AppendErr(QString& strErrInfo, const QString& strCurrError)
@@ -146,6 +155,15 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
         if(!strErrInfo.isEmpty())
             strRet = FormatErrorMsg(pCmd->GetDisplayStr(), strErrInfo);
         break;
+    case CMD_ZFPGATEST_READ_TIMING_MEASUREMENT:
+        if (!params.empty())
+            strCurrError = QString("Read timing measurement does not need any parameters");
+            AppendErr(strErrInfo, strCurrError);
+
+        if(!strErrInfo.isEmpty())
+            strRet = FormatErrorMsg(pCmd->GetDisplayStr(), strErrInfo);
+        break;
+
     }
     return strRet;
 }

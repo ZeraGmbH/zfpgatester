@@ -94,5 +94,28 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         else
             emit OperationFinish(false, QString());
         break;
+    case CMD_ZFPGATEST_READ_TIMING_MEASUREMENT:
+        ui32Address = 0;
+        if (lseek(gDeviceFd, ui32Address, SEEK_SET) < 0 )
+        {
+            emit OperationFinish(true, QLatin1String("lseek did not succeed"));
+            return;
+        }
+        ui32Len = 16;
+        readData.resize(ui32Len);
+        if(read(gDeviceFd, readData.data(), ui32Len) < 0)
+        {
+            emit OperationFinish(true, QLatin1String("read did not succeed"));
+            return;
+        }
+        for(int iByte=0; iByte<readData.size(); iByte++)
+        {
+            strByteData.sprintf("%02X", (quint8)readData[iByte]);
+            strResult += strByteData;
+            if(iByte%4 == 3)
+                strResult += QLatin1String(" ");
+        }
+        emit OperationFinish(false, strResult);
+        break;
     }
 }
