@@ -69,6 +69,7 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
     {
     case CMD_ZFPGATEST_READ:
     case CMD_ZFPGATEST_READ_ASCII:
+    case CMD_ZFPGATEST_READ_TIMING_MEASUREMENT:
         strAddrHex = params[0].toString();
         ui32Len = params[1].toInt();
         ui32Address = strAddrHex.toInt(&bConversionOK, 16);
@@ -155,15 +156,6 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
         if(!strErrInfo.isEmpty())
             strRet = FormatErrorMsg(pCmd->GetDisplayStr(), strErrInfo);
         break;
-    case CMD_ZFPGATEST_READ_TIMING_MEASUREMENT:
-        if (!params.empty())
-            strCurrError = QString("Read timing measurement does not need any parameters");
-            AppendErr(strErrInfo, strCurrError);
-
-        if(!strErrInfo.isEmpty())
-            strRet = FormatErrorMsg(pCmd->GetDisplayStr(), strErrInfo);
-        break;
-
     }
     return strRet;
 }
