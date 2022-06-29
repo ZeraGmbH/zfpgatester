@@ -123,7 +123,9 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
                 strResult += QLatin1String(" ");
         }
 
-        strByteData.sprintf("\nTime taken: %ld ns, %ld us", readTime.getTime_ns(), readTime.getTime_us());
+        strByteData.sprintf("\nTime taken(high resoution clock): %ld ns, %ld us", readTime.getTimeHighResolution_ns(), readTime.getTimeHighResolution_us());
+        strResult += strByteData;
+        strByteData.sprintf("\nTime taken(steady clock): %ld ns, %ld us", readTime.getTimeSteadyClock_ns(), readTime.getTimeSteadyClock_us());
         strResult += strByteData;
 
         emit OperationFinish(false, strResult);

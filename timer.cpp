@@ -12,23 +12,38 @@ Timer::~Timer()
 
 void Timer::start()
 {
-    m_startPoint = std::chrono::high_resolution_clock::now();
+    m_start_HighResolutionClock = std::chrono::high_resolution_clock::now();
+    m_start_SteadyClock = std::chrono::steady_clock::now();
 }
 
 void Timer::stop()
 {
-    auto m_endPoint = std::chrono::high_resolution_clock::now();
+    auto m_end_HighResolutionClock = std::chrono::high_resolution_clock::now();
+    auto m_end_SteadyClock= std::chrono::steady_clock::now();
 
-    time_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(m_endPoint-m_startPoint).count();
-    time_us = std::chrono::duration_cast<std::chrono::microseconds>(m_endPoint-m_startPoint).count();
+    time_ns_HighResolutionClock = std::chrono::duration_cast<std::chrono::nanoseconds>(m_end_HighResolutionClock - m_start_HighResolutionClock).count();
+    time_us_HighResolutionClock = std::chrono::duration_cast<std::chrono::microseconds>(m_end_HighResolutionClock - m_start_HighResolutionClock).count();
+
+    time_ns_SteadyClock = std::chrono::duration_cast<std::chrono::nanoseconds>(m_end_SteadyClock - m_start_SteadyClock).count();
+    time_us_SteadyClock = std::chrono::duration_cast<std::chrono::microseconds>(m_end_SteadyClock - m_start_SteadyClock).count();
 }
 
-long Timer::getTime_us()
+long Timer::getTimeHighResolution_us()
 {
-    return time_us;
+    return time_us_HighResolutionClock;
 }
 
-long Timer::getTime_ns()
+long Timer::getTimeHighResolution_ns()
 {
-    return time_ns;
+    return time_ns_HighResolutionClock;
+}
+
+long Timer::getTimeSteadyClock_us()
+{
+    return time_us_SteadyClock;
+}
+
+long Timer::getTimeSteadyClock_ns()
+{
+    return time_ns_SteadyClock;
 }
