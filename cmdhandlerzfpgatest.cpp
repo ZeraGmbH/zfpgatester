@@ -3,6 +3,7 @@
 #include <QStringList>
 #include <sys/types.h>
 #include <unistd.h>
+#include <chrono>
 #include "globals.h"
 #include "cmdhandlerzfpgatest.h"
 #include "cmdparserzfpgatest.h"
@@ -95,19 +96,25 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
             emit OperationFinish(false, QString());
         break;
     case CMD_ZFPGATEST_READ_TIMING_MEASUREMENT:
-        ui32Address = 0;
+        strAddrHex = params[0].toString();
+        ui32Address = strAddrHex.toInt(Q_NULLPTR, 16);
         if (lseek(gDeviceFd, ui32Address, SEEK_SET) < 0 )
         {
             emit OperationFinish(true, QLatin1String("lseek did not succeed"));
             return;
         }
-        ui32Len = 16;
+        ui32Len = params[1].toInt();
         readData.resize(ui32Len);
+
+        auto start = std::chrono::high_resolution_clock::now();
         if(read(gDeviceFd, readData.data(), ui32Len) < 0)
         {
             emit OperationFinish(true, QLatin1String("read did not succeed"));
             return;
         }
+        auto end = std::chrono::high_resolution_clock::now();
+        auto time_in_ns =  std::chrono::duration_cast<std::chrono::nanoseconds>(end-start).count();
+
         for(int iByte=0; iByte<readData.size(); iByte++)
         {
             strByteData.sprintf("%02X", (quint8)readData[iByte]);
@@ -115,6 +122,10 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
             if(iByte%4 == 3)
                 strResult += QLatin1String(" ");
         }
+
+        strByteData.sprintf("/n Time taken: %.2ld", time_in_ns);
+        strResult += strByteData;
+
         emit OperationFinish(false, strResult);
         break;
     }
