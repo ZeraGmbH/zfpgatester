@@ -113,7 +113,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
             return;
         }
         auto end = std::chrono::high_resolution_clock::now();
-        auto time_in_ns =  std::chrono::duration_cast<std::chrono::nanoseconds>(end-start).count();
+        auto time_in_us =  std::chrono::duration_cast<std::chrono::microseconds>(end-start).count();
 
         for(int iByte=0; iByte<readData.size(); iByte++)
         {
@@ -123,7 +123,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
                 strResult += QLatin1String(" ");
         }
 
-        strByteData.sprintf("/n Time taken: %.2ld", time_in_ns);
+        strByteData.sprintf("\n Time taken: %.2f", time_in_us);
         strResult += strByteData;
 
         emit OperationFinish(false, strResult);
