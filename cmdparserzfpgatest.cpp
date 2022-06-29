@@ -41,7 +41,7 @@ CmdParserZfpgaTest::CmdParserZfpgaTest(QObject *parent) : QSimpleCmdParserSocket
     /* ReadTimingMeasurement: Read fixed amount of data from FPGA */
     /* Parameters: none */
     /* Result: strHexData */
-    AddCmdInfo("ReadTimeMeasurement",
+    AddCmdInfo("ReadTime",
                CmdParamTypeIdList() << PARAM_TYPE_STRING << PARAM_TYPE_INT,
                CMD_ZFPGATEST_READ_TIMING_MEASUREMENT,
                true,
