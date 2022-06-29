@@ -30,12 +30,14 @@ set(SOURCES
     cmdhandlerzfpgatest.cpp
     cmdparserzfpgatest.cpp
     main.cpp
+    timer.cpp
 )
 
 set(HEADERS
     cmdhandlerzfpgatest.h
     cmdparserzfpgatest.h
     globals.h
+    timer.h
 )
 
 #create executable
