@@ -20,7 +20,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
     QByteArray writeData;
     QByteArray readData;
     QString strResult, strByteData;
-    Timer readTime;
+    Timer readTime, writeTime;
 
     switch(pCmd->GetCmdID())
     {
@@ -130,5 +130,38 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
 
         emit OperationFinish(false, strResult);
         break;
+    case CMD_ZFPGATEST_WRITE_TIMING_MEASUREMENT:
+        strAddrHex = params[0].toString();
+        ui32Address = strAddrHex.toInt(Q_NULLPTR, 16);
+        if (lseek(gDeviceFd, ui32Address, SEEK_SET) < 0 )
+        {
+            emit OperationFinish(true, QLatin1String("lseek did not succeed"));
+            return;
+        }
+        QString strData;
+        strData = params[1].toString().replace(QLatin1String(" "), QString());
+        ui32Len = strData.size() / 2;
+        for(quint32 ui32Byte=0; ui32Byte<ui32Len; ui32Byte++)
+        {
+            writeData.append(strData.mid(ui32Byte*2, 2).toInt(Q_NULLPTR, 16));
+        }
+
+        writeTime.start();
+        if(write(gDeviceFd, writeData.data(), ui32Len) < 0)
+        {
+            emit OperationFinish(true, QLatin1String("write did not succeed"));
+            return;
+        }
+        writeTime.stop();
+
+        strByteData.sprintf("\nTime taken(high resoution clock): %ld ns, %ld us", writeTime.getTimeHighResolution_ns(), writeTime.getTimeHighResolution_us());
+        strResult += strByteData;
+        strByteData.sprintf("\nTime taken(steady clock): %ld ns, %ld us", writeTime.getTimeSteadyClock_ns(), writeTime.getTimeSteadyClock_us());
+        strResult += strByteData;
+
+        emit OperationFinish(false, strResult);
+
+        break;
+
     }
 }
