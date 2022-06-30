@@ -122,7 +122,7 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
                 strCurrError = QString("Hex address %1 is not 32bit aligned").arg(strAddrHex);
                 AppendErr(strErrInfo, strCurrError);
             }
-            if(pCmd->GetCmdID() == CMD_ZFPGATEST_WRITE)
+            if((pCmd->GetCmdID() == CMD_ZFPGATEST_WRITE) || (pCmd->GetCmdID() == CMD_ZFPGATEST_WRITE_TIMING_MEASUREMENT))
             {
                 QString strData;
                 // ensure aligned data
