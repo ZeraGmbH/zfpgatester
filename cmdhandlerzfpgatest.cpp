@@ -143,7 +143,11 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         ui32Len = params[1].toInt();
         FileHandler inputDataFile("Sine_Data.txt");
         std::vector<QString> strData;
-        inputDataFile.readFile(ui32Len, strData);
+
+        if (!inputDataFile.readFile(ui32Len, strData)) {
+            emit OperationFinish(true, QLatin1String("file could not be opened"));
+            return;
+        }
 
         for(quint32 ui32Byte=0; ui32Byte<ui32Len; ui32Byte++)
         {
