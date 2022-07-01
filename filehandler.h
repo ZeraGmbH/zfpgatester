@@ -5,14 +5,13 @@
 #include <vector>
 #include <QStringList>
 #include <QFile>
-#include <QTextStream>
 
 class FileHandler
 {
 public:
     FileHandler(const QString fileName);
 
-    void readFile(uint32_t length, std::vector<QString> &readValues);
+    bool readFile(uint32_t length, std::vector<QString> &readValues);
 
 private:
     bool openFileForRead();
