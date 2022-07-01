@@ -31,6 +31,7 @@ set(SOURCES
     cmdparserzfpgatest.cpp
     main.cpp
     timer.cpp
+    filehandler.cpp
 )
 
 set(HEADERS
@@ -38,6 +39,7 @@ set(HEADERS
     cmdparserzfpgatest.h
     globals.h
     timer.h
+    filehandler.h
 )
 
 #create executable

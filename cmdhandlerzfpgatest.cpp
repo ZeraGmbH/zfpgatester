@@ -7,6 +7,7 @@
 #include "cmdhandlerzfpgatest.h"
 #include "cmdparserzfpgatest.h"
 #include "timer.h"
+#include "filehandler.h"
 
 CmdHandlerZfpgaTest::CmdHandlerZfpgaTest(QObject *parent) : QSimpleCmdHandlerBase(parent)
 {
@@ -138,12 +139,15 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
             emit OperationFinish(true, QLatin1String("lseek did not succeed"));
             return;
         }
-        QString strData;
-        strData = params[1].toString().replace(QLatin1String(" "), QString());
-        ui32Len = strData.size() / 2;
+
+        ui32Len = params[1].toInt();
+        FileHandler inputDataFile("Sine_Data.txt");
+        std::vector<QString> strData;
+        inputDataFile.readFile(ui32Len, strData);
+
         for(quint32 ui32Byte=0; ui32Byte<ui32Len; ui32Byte++)
         {
-            writeData.append(strData.mid(ui32Byte*2, 2).toInt(Q_NULLPTR, 16));
+            writeData.append(strData.data()->mid(ui32Byte*2, 2).toInt(Q_NULLPTR, 16));
         }
 
         writeTime.start();
