@@ -170,6 +170,8 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         quint32 iterations = params[4].toInt();
         std::vector<long> time_us;
         long avgTime_us = 0;
+        long maxTime_us = 0;
+        long minTime_us = std::numeric_limits<long>::max();
 
         for(quint32 i=0; i<iterations; i++)
         {
@@ -188,10 +190,14 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         for(const auto &time : time_us)
         {
             avgTime_us += time;
+            if (time < minTime_us)
+                minTime_us = time;
+            if (time > maxTime_us)
+                maxTime_us = time;
         }
         avgTime_us /= time_us.size();
 
-        strByteData.sprintf("\nAverage Time taken: %ld us", avgTime_us);
+        strByteData.sprintf("\nTime taken:\tAverage %ld us,\tMin %ld us,\tMax %ld us", avgTime_us, minTime_us, maxTime_us);
         strResult += strByteData;
 
 
