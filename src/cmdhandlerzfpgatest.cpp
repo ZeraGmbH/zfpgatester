@@ -142,7 +142,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         }
 
         ui32Len = params[1].toInt();
-        TextFileHandler inputDataFile("Sine_Data.txt", "/home/operator/Desktop/", false);
+        TextFileHandler inputDataFile(params[2].toString(), params[3].toString(), false);
         std::vector<QString> fileData;
 
         if (!inputDataFile.fileExists()) {
