@@ -50,10 +50,10 @@ CmdParserZfpgaTest::CmdParserZfpgaTest(QObject *parent) : QSimpleCmdParserSocket
     /* Parameters: strHexAddress, iLen */
     /* Result: time measured */
     AddCmdInfo("WriteTime",
-               CmdParamTypeIdList() << PARAM_TYPE_STRING << PARAM_TYPE_INT << PARAM_TYPE_STRING << PARAM_TYPE_STRING,
+               CmdParamTypeIdList() << PARAM_TYPE_STRING << PARAM_TYPE_INT << PARAM_TYPE_STRING << PARAM_TYPE_STRING << PARAM_TYPE_INT,
                CMD_ZFPGATEST_WRITE_TIMING_MEASUREMENT,
                true,
-               QLatin1String("Param: strHexAddress, iLen, strWriteDataFile, strWriteDataFilePath"));
+               QLatin1String("Param: strHexAddress, iLen, strWriteDataFile, strWriteDataFilePath, iTotalIterations"));
 }
 
 static void AppendErr(QString& strErrInfo, const QString& strCurrError)
@@ -71,6 +71,7 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
     QString strAddrHex;
     quint32 ui32Address;
     quint32 ui32Len;
+    quint32 ui32Iterations;
     const quint32 ui32MaxAddress = (1<<19);
     bool bConversionOK = true;
     switch(pCmd->GetCmdID())
@@ -102,6 +103,16 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
                 strCurrError.sprintf("Maximum address accessed 0x%04X exceeds maximum 0x%04X",
                                    ui32Address + ui32Len, ui32MaxAddress);
                 AppendErr(strErrInfo, strCurrError);
+            }
+
+            if(pCmd->GetCmdID() == CMD_ZFPGATEST_WRITE_TIMING_MEASUREMENT)
+            {
+                ui32Iterations = params[4].toInt();
+                if (ui32Iterations < 0 )
+                {
+                    strCurrError = QString("Iterations can't be negative").arg(ui32Iterations);
+                    AppendErr(strErrInfo, strCurrError);
+                }
             }
         }
         else
