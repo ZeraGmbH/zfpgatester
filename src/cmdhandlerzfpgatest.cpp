@@ -81,6 +81,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         {
             QString strData;
             strData = params[1].toString().replace(QLatin1String(" "), QString());
+
             ui32Len = strData.size() / 2;
             for(quint32 ui32Byte=0; ui32Byte<ui32Len; ui32Byte++)
             {
@@ -95,7 +96,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         if(write(gDeviceFd, writeData.data(), ui32Len) < 0)
             emit OperationFinish(true, QLatin1String("write did not succeed"));
         else
-            emit OperationFinish(false, QString());
+            emit OperationFinish(false, strResult);
         break;
     case CMD_ZFPGATEST_READ_TIMING_MEASUREMENT:
         strAddrHex = params[0].toString();
@@ -142,21 +143,27 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
 
         ui32Len = params[1].toInt();
         TextFileHandler inputDataFile("Sine_Data.txt", "/home/operator/Desktop/", false);
-        std::vector<QString> strData;
+        std::vector<QString> fileData;
 
         if (!inputDataFile.fileExists()) {
             emit OperationFinish(true, QLatin1String("file doesn't exist"));
             return;
         }
 
-        if (!inputDataFile.readFile(ui32Len, strData)) {
+        if (!inputDataFile.readFile(ui32Len/2, fileData)) {
             emit OperationFinish(true, QLatin1String("file could not be opened"));
             return;
         }
 
+        QString strData;
+        for(const auto &row : fileData) {
+            strData += row;
+        }
+
+        ui32Len = strData.size() / 2;
         for(quint32 ui32Byte=0; ui32Byte<ui32Len; ui32Byte++)
         {
-            writeData.append(strData.data()->mid(ui32Byte*2, 2).toInt(Q_NULLPTR, 16));
+            writeData.append(strData.mid(ui32Byte*2, 2).toInt(Q_NULLPTR, 16));
         }
 
         writeTime.start();
