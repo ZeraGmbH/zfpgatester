@@ -5,7 +5,7 @@ set(SOURCES
     cmdhandlerzfpgatest.cpp
     cmdparserzfpgatest.cpp
     timer.cpp
-    filehandler.cpp
+    textfilehandler.cpp
 )
 
 set(HEADERS
@@ -13,7 +13,7 @@ set(HEADERS
     cmdparserzfpgatest.h
     globals.h
     timer.h
-    filehandler.h
+    textfilehandler.h
 )
 
 add_library(${PROJECT_NAME}_lib STATIC

@@ -7,7 +7,7 @@
 #include "cmdhandlerzfpgatest.h"
 #include "cmdparserzfpgatest.h"
 #include "timer.h"
-#include "filehandler.h"
+#include "textfilehandler.h"
 
 CmdHandlerZfpgaTest::CmdHandlerZfpgaTest(QObject *parent) : QSimpleCmdHandlerBase(parent)
 {
@@ -141,8 +141,13 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         }
 
         ui32Len = params[1].toInt();
-        FileHandler inputDataFile("Sine_Data.txt");
+        TextFileHandler inputDataFile("Sine_Data.txt", "/home/operator/Desktop/", false);
         std::vector<QString> strData;
+
+        if (!inputDataFile.fileExists()) {
+            emit OperationFinish(true, QLatin1String("file doesn't exist"));
+            return;
+        }
 
         if (!inputDataFile.readFile(ui32Len, strData)) {
             emit OperationFinish(true, QLatin1String("file could not be opened"));
