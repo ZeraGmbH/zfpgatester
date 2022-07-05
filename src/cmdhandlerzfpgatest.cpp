@@ -156,7 +156,8 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         }
 
         QString strData;
-        for(const auto &row : fileData) {
+        for(const auto &row : fileData)
+        {
             strData += row;
         }
 
@@ -166,18 +167,33 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
             writeData.append(strData.mid(ui32Byte*2, 2).toInt(Q_NULLPTR, 16));
         }
 
-        writeTime.start();
-        if(write(gDeviceFd, writeData.data(), ui32Len) < 0)
-        {
-            emit OperationFinish(true, QLatin1String("write did not succeed"));
-            return;
-        }
-        writeTime.stop();
+        quint32 iterations = params[4].toInt();
+        std::vector<long> time_us;
+        long avgTime_us = 0;
 
-        strByteData.sprintf("\nTime taken(high resoution clock): %ld ns, %ld us", writeTime.getTimeHighResolution_ns(), writeTime.getTimeHighResolution_us());
+        for(quint32 i=0; i<iterations; i++)
+        {
+            writeTime.start();
+            if(write(gDeviceFd, writeData.data(), ui32Len) < 0)
+            {
+                emit OperationFinish(true, QLatin1String("write did not succeed"));
+                return;
+            }
+            writeTime.stop();
+            time_us.push_back(writeTime.getTimeHighResolution_us());
+            strByteData.sprintf("\nTime taken: %ld us", writeTime.getTimeHighResolution_us());
+            strResult += strByteData;
+        }
+
+        for(const auto &time : time_us)
+        {
+            avgTime_us += time;
+        }
+        avgTime_us /= time_us.size();
+
+        strByteData.sprintf("\nAverage Time taken: %ld us", avgTime_us);
         strResult += strByteData;
-        strByteData.sprintf("\nTime taken(steady clock): %ld ns, %ld us", writeTime.getTimeSteadyClock_ns(), writeTime.getTimeSteadyClock_us());
-        strResult += strByteData;
+
 
         emit OperationFinish(false, strResult);
 
