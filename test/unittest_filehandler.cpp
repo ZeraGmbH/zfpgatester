@@ -19,51 +19,42 @@ TEST(FILE_HANDLER, OPEN_EXISTING_FILE) {
 
 TEST(FILE_HANDLER, FILE_WRITE) {
     TextFileHandler f("Test.txt", "", false);
-    std::vector<QString> writeData = {"0000", "1111"};
+    QString writeData = {"0000\n1111\n"};
 
     EXPECT_TRUE(f.writeFile(writeData, false));
 }
 
 TEST(FILE_HANDLER, FILE_READ) {
     TextFileHandler f("Test.txt", "", false);
-    std::vector<QString> readData;
+    QString readData;
 
-    EXPECT_TRUE(f.readFile(2, readData));
+    EXPECT_TRUE(f.readFile(readData));
 }
 
 TEST(FILE_HANDLER, VERIFY_FILE_READ_WRITE) {
     TextFileHandler f("Test.txt", "", false);
-    std::vector<QString> writeData;
-    std::vector<QString> readData;
-
-    writeData.push_back("0000");
-    writeData.push_back("1111");
+    QString writeData = {"0000\n1111\n"};
+    QString readData;
 
     f.writeFile(writeData, false);
-    f.readFile(2, readData);
+    f.readFile(readData);
 
-    EXPECT_EQ(readData.at(0), writeData.at(0));
-    EXPECT_EQ(readData.at(1), writeData.at(1));
+    EXPECT_EQ(readData, "0000\n1111\n");
 }
 
 TEST(FILE_HANDLER, VERIFY_FILE_READ_WRITE_APPEND) {
     TextFileHandler f("Test.txt", "", false);
-    std::vector<QString> writeData1, writeData2;
-    std::vector<QString> readData;
+    QString writeData1, writeData2;
+    QString readData;
 
-    writeData1.push_back("0000");
-    writeData1.push_back("1111");
+    writeData1 = "0000\n1111\n";
     f.writeFile(writeData1, false);
 
-    writeData2.push_back("2222");
-    writeData2.push_back("3333");
+    writeData2 = "2222\n3333\n";
     f.writeFile(writeData2, true);
-    f.readFile(4, readData);
+    f.readFile(readData);
 
-    EXPECT_EQ(readData.at(0), writeData1.at(0));
-    EXPECT_EQ(readData.at(1), writeData1.at(1));
-    EXPECT_EQ(readData.at(2), writeData2.at(0));
-    EXPECT_EQ(readData.at(3), writeData2.at(1));
+    EXPECT_EQ(readData, "0000\n1111\n2222\n3333\n");
 }
 
 TEST(FILE_HANDLER, DELETE_EXISTING_FILE) {

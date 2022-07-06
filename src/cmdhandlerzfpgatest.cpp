@@ -81,7 +81,6 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         {
             QString strData;
             strData = params[1].toString().replace(QLatin1String(" "), QString());
-
             ui32Len = strData.size() / 2;
             for(quint32 ui32Byte=0; ui32Byte<ui32Len; ui32Byte++)
             {
@@ -96,7 +95,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         if(write(gDeviceFd, writeData.data(), ui32Len) < 0)
             emit OperationFinish(true, QLatin1String("write did not succeed"));
         else
-            emit OperationFinish(false, strResult);
+            emit OperationFinish(false, QString());
         break;
     case CMD_ZFPGATEST_READ_TIMING_MEASUREMENT:
         strAddrHex = params[0].toString();
@@ -125,9 +124,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
                 strResult += QLatin1String(" ");
         }
 
-        strByteData.sprintf("\nTime taken(high resoution clock): %ld ns, %ld us", readTime.getTimeHighResolution_ns(), readTime.getTimeHighResolution_us());
-        strResult += strByteData;
-        strByteData.sprintf("\nTime taken(steady clock): %ld ns, %ld us", readTime.getTimeSteadyClock_ns(), readTime.getTimeSteadyClock_us());
+        strByteData.sprintf("\nTime taken: %ld us", readTime.getTimeSteadyClock_us());
         strResult += strByteData;
 
         emit OperationFinish(false, strResult);
@@ -141,27 +138,21 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
             return;
         }
 
-        ui32Len = params[1].toInt();
-        TextFileHandler inputDataFile(params[2].toString(), params[3].toString(), false);
-        std::vector<QString> fileData;
-
+        QString fileName = params[2].toString();
+        QString filePath = params[3].toString();
+        TextFileHandler inputDataFile(fileName, filePath, false);
+        QString fileData, strData;
         if (!inputDataFile.fileExists()) {
             emit OperationFinish(true, QLatin1String("file doesn't exist"));
             return;
         }
-
-        if (!inputDataFile.readFile(ui32Len/2, fileData)) {
+        if (!inputDataFile.readFile(fileData)) {
             emit OperationFinish(true, QLatin1String("file could not be opened"));
             return;
         }
+        strData = fileData.replace(QLatin1String("\n"), QString());
 
-        QString strData;
-        for(const auto &row : fileData)
-        {
-            strData += row;
-        }
-
-        ui32Len = strData.size() / 2;
+        ui32Len = params[1].toInt();
         for(quint32 ui32Byte=0; ui32Byte<ui32Len; ui32Byte++)
         {
             writeData.append(strData.mid(ui32Byte*2, 2).toInt(Q_NULLPTR, 16));
@@ -170,9 +161,6 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         quint32 iterations = params[4].toInt();
         std::vector<long> time_us;
         long avgTime_us = 0;
-        long maxTime_us = 0;
-        long minTime_us = std::numeric_limits<long>::max();
-
         for(quint32 i=0; i<iterations; i++)
         {
             writeTime.start();
@@ -186,18 +174,14 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
             strByteData.sprintf("\nTime taken: %ld us", writeTime.getTimeHighResolution_us());
             strResult += strByteData;
         }
-
+        auto minmaxTime = std::minmax_element(time_us.begin(), time_us.end());
         for(const auto &time : time_us)
         {
             avgTime_us += time;
-            if (time < minTime_us)
-                minTime_us = time;
-            if (time > maxTime_us)
-                maxTime_us = time;
         }
         avgTime_us /= time_us.size();
 
-        strByteData.sprintf("\nTime taken:\tAverage %ld us,\tMin %ld us,\tMax %ld us", avgTime_us, minTime_us, maxTime_us);
+        strByteData.sprintf("\nTime taken:\tAverage %ld us,\tMin %ld us,\tMax %ld us", avgTime_us, *minmaxTime.first, *minmaxTime.second);
         strResult += strByteData;
 
 
