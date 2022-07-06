@@ -14,8 +14,8 @@ public:
 
     bool fileExists();
     void deleteFile();
-    bool readFile(uint32_t length, std::vector<QString> &readValues);
-    bool writeFile(std::vector<QString> &writeValues, bool append);
+    bool readFile(QString &readValues);
+    bool writeFile(QString &writeValues, bool append);
 
 private:
     void createFile();

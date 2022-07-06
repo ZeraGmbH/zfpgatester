@@ -20,32 +20,26 @@ void TextFileHandler::deleteFile()
     m_file.remove();
 }
 
-bool TextFileHandler::readFile(uint32_t length, std::vector<QString> &readValues)
+bool TextFileHandler::readFile(QString &readValues)
 {
-    QTextStream in(&m_file);
-    QString temp;
+    QTextStream fileContents(&m_file);
     bool fileOpened = openFileForRead();
 
     if (fileOpened) {
-        for (uint32_t i = 0; i < length; i++) {
-            temp = in.readLine();
-            readValues.push_back(temp);
-        }
+        readValues = fileContents.readAll();
         m_file.close();
     }
 
     return fileOpened;
 }
 
-bool TextFileHandler::writeFile(std::vector<QString> &writeValues, bool append)
+bool TextFileHandler::writeFile(QString &writeValues, bool append)
 {
-    QTextStream in(&m_file);
+    QTextStream fileContents(&m_file);
     bool fileOpened = openFileForWrite(append);
 
     if (fileOpened) {
-        for (uint32_t i = 0; i < writeValues.size(); i++) {
-            in << writeValues.at(i) << "\n";
-        }
+        fileContents << writeValues;
         m_file.close();
     }
 

@@ -71,7 +71,6 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
     QString strAddrHex;
     quint32 ui32Address;
     quint32 ui32Len;
-    quint32 ui32Iterations;
     const quint32 ui32MaxAddress = (1<<19);
     bool bConversionOK = true;
     switch(pCmd->GetCmdID())
@@ -103,16 +102,6 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
                 strCurrError.sprintf("Maximum address accessed 0x%04X exceeds maximum 0x%04X",
                                    ui32Address + ui32Len, ui32MaxAddress);
                 AppendErr(strErrInfo, strCurrError);
-            }
-
-            if(pCmd->GetCmdID() == CMD_ZFPGATEST_WRITE_TIMING_MEASUREMENT)
-            {
-                ui32Iterations = params[4].toInt();
-                if (ui32Iterations < 0 )
-                {
-                    strCurrError = QString("Iterations can't be negative").arg(ui32Iterations);
-                    AppendErr(strErrInfo, strCurrError);
-                }
             }
         }
         else
