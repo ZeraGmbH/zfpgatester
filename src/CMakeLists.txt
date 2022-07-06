@@ -17,13 +17,13 @@ set(HEADERS
 )
 
 add_library(${PROJECT_NAME}_lib STATIC
-            ${SOURCES}
-            ${HEADERS}
-            )
+    ${SOURCES}
+    ${HEADERS}
+)
 
 #set target Version
-set_target_properties(simplecmdiobase PROPERTIES VERSION ${PROJECT_VERSION})
-set_target_properties(simplecmdiobase PROPERTIES SOVERSION ${ZFPGATESTER_VERSION_MAJOR})
+set_target_properties(${PROJECT_NAME}_lib PROPERTIES VERSION ${PROJECT_VERSION})
+set_target_properties(${PROJECT_NAME}_lib PROPERTIES SOVERSION ${ZFPGATESTER_VERSION_MAJOR})
 
 #link dependencies
 target_link_libraries(${PROJECT_NAME}_lib

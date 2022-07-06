@@ -9,13 +9,12 @@ if(${GTest_FOUND})
     add_test(NAME    ${PROJECT_NAME}-unittest
              COMMAND ${PROJECT_NAME}-unittest)
 
-     file(GLOB UNITTESTS
-         *.cpp
-         *.h
+    set(TEST_SOURCES
+         unittest_filehandler.cpp
      )
 
     add_executable(${PROJECT_NAME}-unittest
-        ${UNITTESTS}
+        ${TEST_SOURCES}
         )
 
     target_include_directories(${PROJECT_NAME}-unittest
