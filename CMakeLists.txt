@@ -31,6 +31,7 @@ find_package(simplecmdiobase REQUIRED)
 add_subdirectory(src)
 add_subdirectory(test)
 
+enable_testing()
 
 # spawn out some info on configuration
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
