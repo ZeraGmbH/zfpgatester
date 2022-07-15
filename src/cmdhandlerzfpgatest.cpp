@@ -28,7 +28,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
     case CMD_ZFPGATEST_READ_ASCII:
         ui32Address = hexStringToInt(params[0]);
         if (lSeek(ui32Address, gDeviceFd)) {
-            emit reportlSeekError();
+            reportlSeekError();
             return;
         }
         ui32Len = params[1].toInt();
@@ -62,7 +62,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
     case CMD_ZFPGATEST_WRITE_ASCII:
         ui32Address = hexStringToInt(params[0]);
         if (lSeek(ui32Address, gDeviceFd)) {
-            emit reportlSeekError();
+            reportlSeekError();
             return;
         }
         if(pCmd->GetCmdID() == CMD_ZFPGATEST_WRITE) {
@@ -85,7 +85,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
     case CMD_ZFPGATEST_READ_WITH_TIMER:
         ui32Address = hexStringToInt(params[0]);
         if (lSeek(ui32Address, gDeviceFd)) {
-            emit reportlSeekError();
+            reportlSeekError();
             return;
         }
         ui32Len = params[1].toInt();
@@ -113,7 +113,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
     case CMD_ZFPGATEST_WRITE_WITH_TIMER:
         ui32Address = hexStringToInt(params[0]);
         if (lSeek(ui32Address, gDeviceFd)) {
-            emit reportlSeekError();
+            reportlSeekError();
             return;
         }
 
