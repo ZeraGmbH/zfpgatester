@@ -66,12 +66,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
             return;
         }
         if(pCmd->GetCmdID() == CMD_ZFPGATEST_WRITE) {
-            QString strData;
-            strData = params[1].toString().replace(QLatin1String(" "), QString());
-            ui32Len = strData.size() / 2;
-            for(quint32 ui32Byte=0; ui32Byte<ui32Len; ui32Byte++) {
-                writeData.append(strData.mid(ui32Byte*2, 2).toInt(Q_NULLPTR, 16));
-            }
+            writeData = stringToQBytes(params[1].toString());
         }
         else {
             writeData = QSimpleCmdParserBase::BinaryFromAscii(params[1].toString());
@@ -128,12 +123,8 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
             emit OperationFinish(true, QLatin1String("file could not be opened"));
             return;
         }
-        strData = fileData.replace(QLatin1String("\n"), QString());
 
-        ui32Len = params[1].toInt();
-        for(quint32 ui32Byte=0; ui32Byte<ui32Len; ui32Byte++) {
-            writeData.append(strData.mid(ui32Byte*2, 2).toInt(Q_NULLPTR, 16));
-        }
+        writeData = stringToQBytes(fileData);
 
         quint32 iterations = params[3].toInt();
         std::vector<long> time_us;
@@ -179,4 +170,15 @@ void CmdHandlerZfpgaTest::reportlSeekError()
 quint32 CmdHandlerZfpgaTest::hexStringToInt(QVariant param)
 {
     return param.toString().toInt(Q_NULLPTR, 16);
+}
+
+QByteArray CmdHandlerZfpgaTest::stringToQBytes(QString strData)
+{
+    strData = strData.replace(" ", "").replace("\n", "");
+    quint32 ui32Len = strData.size() / 2;
+    QByteArray intData;
+    for(quint32 ui32Byte=0; ui32Byte<ui32Len; ui32Byte++) {
+        intData.append(strData.mid(ui32Byte*2, 2).toInt(Q_NULLPTR, 16));
+    }
+    return intData;
 }

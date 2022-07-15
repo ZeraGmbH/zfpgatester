@@ -21,6 +21,8 @@ private:
     void reportlSeekError();
 
     quint32 hexStringToInt(QVariant param);
+
+    QByteArray stringToQBytes(QString strData);
 };
 
 #endif // CMDHANDERZFPGATEST_H
