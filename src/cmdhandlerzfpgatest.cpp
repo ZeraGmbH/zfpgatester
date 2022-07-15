@@ -15,7 +15,6 @@ CmdHandlerZfpgaTest::CmdHandlerZfpgaTest(QObject *parent) : QSimpleCmdHandlerBas
 
 void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
 {
-    QString strAddrHex;
     quint32 ui32Address;
     quint32 ui32Len;
     QByteArray writeData;
@@ -27,11 +26,10 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
     {
     case CMD_ZFPGATEST_READ:
     case CMD_ZFPGATEST_READ_ASCII:
-        strAddrHex = params[0].toString();
-        ui32Address = strAddrHex.toInt(Q_NULLPTR, 16);
-        if (lseek(gDeviceFd, ui32Address, SEEK_SET) < 0 )
+        ui32Address = hexStringToInt(params[0]);
+        if (lSeek(ui32Address, gDeviceFd))
         {
-            emit OperationFinish(true, QLatin1String("lseek did not succeed"));
+            emit reportlSeekError();
             return;
         }
         ui32Len = params[1].toInt();
@@ -70,11 +68,10 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         break;
     case CMD_ZFPGATEST_WRITE:
     case CMD_ZFPGATEST_WRITE_ASCII:
-        strAddrHex = params[0].toString();
-        ui32Address = strAddrHex.toInt(Q_NULLPTR, 16);
-        if (lseek(gDeviceFd, ui32Address, SEEK_SET) < 0 )
+        ui32Address = hexStringToInt(params[0]);
+        if (lSeek(ui32Address, gDeviceFd))
         {
-            emit OperationFinish(true, QLatin1String("lseek did not succeed"));
+            emit reportlSeekError();
             return;
         }
         if(pCmd->GetCmdID() == CMD_ZFPGATEST_WRITE)
@@ -98,11 +95,10 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
             emit OperationFinish(false, QString());
         break;
     case CMD_ZFPGATEST_READ_WITH_TIMER:
-        strAddrHex = params[0].toString();
-        ui32Address = strAddrHex.toInt(Q_NULLPTR, 16);
-        if (lseek(gDeviceFd, ui32Address, SEEK_SET) < 0 )
+        ui32Address = hexStringToInt(params[0]);
+        if (lSeek(ui32Address, gDeviceFd))
         {
-            emit OperationFinish(true, QLatin1String("lseek did not succeed"));
+            emit reportlSeekError();
             return;
         }
         ui32Len = params[1].toInt();
@@ -130,11 +126,10 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         emit OperationFinish(false, strResult);
         break;
     case CMD_ZFPGATEST_WRITE_WITH_TIMER:
-        strAddrHex = params[0].toString();
-        ui32Address = strAddrHex.toInt(Q_NULLPTR, 16);
-        if (lseek(gDeviceFd, ui32Address, SEEK_SET) < 0 )
+        ui32Address = hexStringToInt(params[0]);
+        if (lSeek(ui32Address, gDeviceFd))
         {
-            emit OperationFinish(true, QLatin1String("lseek did not succeed"));
+            emit reportlSeekError();
             return;
         }
 
@@ -189,4 +184,19 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         break;
 
     }
+}
+
+bool CmdHandlerZfpgaTest::lSeek(quint32 address, int fd)
+{
+    return (lseek(fd, address, SEEK_SET) >= 0);
+}
+
+void CmdHandlerZfpgaTest::reportlSeekError()
+{
+    emit OperationFinish(true, QLatin1String("lseek did not succeed"));
+}
+
+quint32 CmdHandlerZfpgaTest::hexStringToInt(QVariant param)
+{
+    return param.toString().toInt(Q_NULLPTR, 16);
 }
