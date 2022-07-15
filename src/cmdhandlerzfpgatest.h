@@ -17,6 +17,10 @@ signals:
 public slots:
 
 private:
+    bool lSeek(quint32 address, int fd);
+    void reportlSeekError();
+
+    quint32 hexStringToInt(QVariant param);
 };
 
 #endif // CMDHANDERZFPGATEST_H
