@@ -6,11 +6,13 @@
 #include <QStringList>
 #include <QFile>
 #include <QDir>
+#include <QFileInfo>
+#include <memory>
 
 class TextFileHandler
 {
 public:
-    TextFileHandler(const QString fileName, const QString filePath, bool createThisFile);
+    TextFileHandler(const QString fileName, bool createThisFile);
 
     bool fileExists();
     void deleteFile();
@@ -24,7 +26,7 @@ private:
 
     QFile m_file;
     QDir m_dir;
-    QString m_filePath;
+    std::shared_ptr<QFileInfo> m_fileInfo;
 };
 
 #endif // FILEHANDLER_H

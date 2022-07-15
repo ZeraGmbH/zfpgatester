@@ -3,36 +3,36 @@
 
 
 TEST(FILE_HANDLER, OPEN_NON_EXISTING_FILE) {
-    TextFileHandler f("Test.txt", "", false);
+    TextFileHandler f("testfolder/Test.txt", false);
     EXPECT_FALSE(f.fileExists());
 }
 
 TEST(FILE_HANDLER, CREATE_FILE_AND_OPEN) {
-    TextFileHandler f("Test.txt", "", true);
+    TextFileHandler f("testfolder/Test.txt", true);
     EXPECT_TRUE(f.fileExists());
 }
 
 TEST(FILE_HANDLER, OPEN_EXISTING_FILE) {
-    TextFileHandler f("Test.txt", "", false);
+    TextFileHandler f("testfolder/Test.txt", false);
     EXPECT_TRUE(f.fileExists());
 }
 
 TEST(FILE_HANDLER, FILE_WRITE) {
-    TextFileHandler f("Test.txt", "", false);
+    TextFileHandler f("testfolder/Test.txt", false);
     QString writeData = {"0000\n1111\n"};
 
     EXPECT_TRUE(f.writeFile(writeData, false));
 }
 
 TEST(FILE_HANDLER, FILE_READ) {
-    TextFileHandler f("Test.txt", "", false);
+    TextFileHandler f("testfolder/Test.txt", false);
     QString readData;
 
     EXPECT_TRUE(f.readFile(readData));
 }
 
 TEST(FILE_HANDLER, VERIFY_FILE_READ_WRITE) {
-    TextFileHandler f("Test.txt", "", false);
+    TextFileHandler f("testfolder/Test.txt", false);
     QString writeData = {"0000\n1111\n"};
     QString readData;
 
@@ -43,7 +43,7 @@ TEST(FILE_HANDLER, VERIFY_FILE_READ_WRITE) {
 }
 
 TEST(FILE_HANDLER, VERIFY_FILE_READ_WRITE_APPEND) {
-    TextFileHandler f("Test.txt", "", false);
+    TextFileHandler f("testfolder/Test.txt", false);
     QString writeData1, writeData2;
     QString readData;
 
@@ -58,7 +58,7 @@ TEST(FILE_HANDLER, VERIFY_FILE_READ_WRITE_APPEND) {
 }
 
 TEST(FILE_HANDLER, DELETE_EXISTING_FILE) {
-    TextFileHandler f("Test.txt", "", false);
+    TextFileHandler f("testfolder/Test.txt", false);
     f.deleteFile();
     EXPECT_FALSE(f.fileExists());
 }

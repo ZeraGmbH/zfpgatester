@@ -1,10 +1,11 @@
 #include <QTextStream>
 #include "textfilehandler.h"
 
-TextFileHandler::TextFileHandler(const QString fileName, const QString filePath, bool createThisFile) : m_filePath(filePath)
+TextFileHandler::TextFileHandler(const QString fileInfo, bool createThisFile)
 {
-    m_file.setFileName(fileName);
-    m_dir.setPath(m_filePath);
+    m_fileInfo = std::make_shared<QFileInfo>(fileInfo);
+    m_file.setFileName(m_fileInfo->fileName());
+    m_dir = (m_fileInfo->dir());
 
     if (createThisFile)
         createFile();
@@ -48,8 +49,8 @@ bool TextFileHandler::writeFile(QString &writeValues, bool append)
 
 void TextFileHandler::createFile()
 {
-    if(!m_dir.exists(m_filePath))
-        m_dir.mkpath(m_filePath);
+    if(!m_dir.exists(m_fileInfo->filePath()))
+        m_dir.mkpath(m_fileInfo->filePath());
 
     m_file.open(QIODevice::ReadWrite);
 }

@@ -97,7 +97,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         else
             emit OperationFinish(false, QString());
         break;
-    case CMD_ZFPGATEST_READ_TIMING_MEASUREMENT:
+    case CMD_ZFPGATEST_READ_WITH_TIMER:
         strAddrHex = params[0].toString();
         ui32Address = strAddrHex.toInt(Q_NULLPTR, 16);
         if (lseek(gDeviceFd, ui32Address, SEEK_SET) < 0 )
@@ -129,7 +129,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
 
         emit OperationFinish(false, strResult);
         break;
-    case CMD_ZFPGATEST_WRITE_TIMING_MEASUREMENT:
+    case CMD_ZFPGATEST_WRITE_WITH_TIMER:
         strAddrHex = params[0].toString();
         ui32Address = strAddrHex.toInt(Q_NULLPTR, 16);
         if (lseek(gDeviceFd, ui32Address, SEEK_SET) < 0 )
@@ -139,8 +139,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         }
 
         QString fileName = params[2].toString();
-        QString filePath = params[3].toString();
-        TextFileHandler inputDataFile(fileName, filePath, false);
+        TextFileHandler inputDataFile(fileName, false);
         QString fileData, strData;
         if (!inputDataFile.fileExists()) {
             emit OperationFinish(true, QLatin1String("file doesn't exist"));
@@ -158,7 +157,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
             writeData.append(strData.mid(ui32Byte*2, 2).toInt(Q_NULLPTR, 16));
         }
 
-        quint32 iterations = params[4].toInt();
+        quint32 iterations = params[3].toInt();
         std::vector<long> time_us;
         long avgTime_us = 0;
         for(quint32 i=0; i<iterations; i++)
