@@ -38,22 +38,22 @@ CmdParserZfpgaTest::CmdParserZfpgaTest(QObject *parent) : QSimpleCmdParserSocket
                true,
                QLatin1String("Param: strHexAddress, strAsciiData\nstrAsciiData: ") + BinaryConversionHelpString());
 
-    /* ReadTime: Read fixed amount of data from FPGA */
+    /* ReadWithTimer: Read data from FPGA and measure time of this operation */
     /* Parameters: strHexAddress, iLen */
     /* Result: strHexData, time measured */
-    AddCmdInfo("ReadTime",
+    AddCmdInfo("ReadWithTimer",
                CmdParamTypeIdList() << PARAM_TYPE_STRING << PARAM_TYPE_INT,
-               CMD_ZFPGATEST_READ_TIMING_MEASUREMENT,
+               CMD_ZFPGATEST_READ_WITH_TIMER,
                true,
                QLatin1String("Param: strHexAddress, iLen\nResult strHexData"));
-    /* WriteTime: Write fixed amount of data to FPGA */
+    /* WriteWithTimer: Write data from a file to FPGA and measure time of this operation */
     /* Parameters: strHexAddress, iLen */
     /* Result: time measured */
-    AddCmdInfo("WriteTime",
-               CmdParamTypeIdList() << PARAM_TYPE_STRING << PARAM_TYPE_INT << PARAM_TYPE_STRING << PARAM_TYPE_STRING << PARAM_TYPE_INT,
-               CMD_ZFPGATEST_WRITE_TIMING_MEASUREMENT,
+    AddCmdInfo("WriteWithTimer",
+               CmdParamTypeIdList() << PARAM_TYPE_STRING << PARAM_TYPE_INT << PARAM_TYPE_STRING << PARAM_TYPE_INT,
+               CMD_ZFPGATEST_WRITE_WITH_TIMER,
                true,
-               QLatin1String("Param: strHexAddress, iLen, strWriteDataFile, strWriteDataFilePath, iTotalIterations"));
+               QLatin1String("Param: strHexAddress, iLen, strWriteDataFile, iTotalIterations"));
 }
 
 static void AppendErr(QString& strErrInfo, const QString& strCurrError)
@@ -77,8 +77,8 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
     {
     case CMD_ZFPGATEST_READ:
     case CMD_ZFPGATEST_READ_ASCII:
-    case CMD_ZFPGATEST_READ_TIMING_MEASUREMENT:
-    case CMD_ZFPGATEST_WRITE_TIMING_MEASUREMENT:
+    case CMD_ZFPGATEST_READ_WITH_TIMER:
+    case CMD_ZFPGATEST_WRITE_WITH_TIMER:
         strAddrHex = params[0].toString();
         ui32Len = params[1].toInt();
         ui32Address = strAddrHex.toInt(&bConversionOK, 16);
@@ -122,7 +122,7 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
                 strCurrError = QString("Hex address %1 is not 32bit aligned").arg(strAddrHex);
                 AppendErr(strErrInfo, strCurrError);
             }
-            if((pCmd->GetCmdID() == CMD_ZFPGATEST_WRITE) || (pCmd->GetCmdID() == CMD_ZFPGATEST_WRITE_TIMING_MEASUREMENT))
+            if(pCmd->GetCmdID() == CMD_ZFPGATEST_WRITE)
             {
                 QString strData;
                 // ensure aligned data
