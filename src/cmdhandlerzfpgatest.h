@@ -12,6 +12,8 @@ class CmdHandlerZfpgaTest : public QSimpleCmdHandlerBase
 public:
     explicit CmdHandlerZfpgaTest(QObject *parent = 0);
     virtual void StartCmd(SimpleCmdData *pCmd, QVariantList params);
+
+    static QByteArray stringToQBytes(QString strData);
 signals:
 
 public slots:
@@ -21,8 +23,6 @@ private:
     void reportlSeekError();
 
     quint32 hexStringToInt(QVariant param);
-
-    QByteArray stringToQBytes(QString strData);
 };
 
 #endif // CMDHANDERZFPGATEST_H
