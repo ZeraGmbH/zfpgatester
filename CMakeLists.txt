@@ -25,7 +25,7 @@ include(FeatureSummary)
 include(GNUInstallDirs)
 
 #Find dependecies
-find_package(Qt5 COMPONENTS Core Network CONFIG REQUIRED)
+find_package(Qt5 COMPONENTS Core Network Test CONFIG REQUIRED)
 find_package(simplecmdiobase REQUIRED)
 
 add_subdirectory(src)
