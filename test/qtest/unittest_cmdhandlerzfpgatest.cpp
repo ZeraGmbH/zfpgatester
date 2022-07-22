@@ -4,7 +4,7 @@
 #include <QFileInfo>
 #include <fcntl.h>
 #include <QSignalSpy>
-
+#include <QTemporaryFile>
 QTEST_MAIN(unittest_cmdhandlerzfpgatest)
 
 int gDeviceFd = 0;
@@ -14,8 +14,8 @@ void unittest_cmdhandlerzfpgatest::lSeekNonexistingFile()
     SimpleCmdData testCmd(QString(), CmdParamTypeIdList() << PARAM_TYPE_INT, CMD_ZFPGATEST_READ, true, QString());
     CmdHandlerZfpgaTest testCmdHandler;
 
-    QFileInfo testFile("Test.txt");
-    gDeviceFd = open(testFile.fileName().toLatin1(), O_RDWR);
+    QTemporaryFile testF;
+    gDeviceFd = testF.handle();
 
     QString address = "00040000";
     QVariantList params{address};
