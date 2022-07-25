@@ -23,4 +23,5 @@ endfunction()
 
 SETUP_TESTS(
     unittest_cmdhandlerzfpgatest
+    unittest_dataformatting
 )
