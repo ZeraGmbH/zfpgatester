@@ -22,12 +22,14 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
     QString strResult, strByteData;
     Timer readTime, writeTime;
 
+    thisFile = std::make_shared<FileWrapper>(gDeviceFd);
+
     switch(pCmd->GetCmdID())
     {
     case CMD_ZFPGATEST_READ:
     case CMD_ZFPGATEST_READ_ASCII:
         ui32Address = hexStringToInt(params[0]);
-        if (!lSeek(ui32Address, gDeviceFd)) {
+        if (!thisFile->lSeek(ui32Address)) {
             reportlSeekError();
             return;
         }
@@ -61,7 +63,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
     case CMD_ZFPGATEST_WRITE:
     case CMD_ZFPGATEST_WRITE_ASCII:
         ui32Address = hexStringToInt(params[0]);
-        if (!lSeek(ui32Address, gDeviceFd)) {
+        if (!thisFile->lSeek(ui32Address)) {
             reportlSeekError();
             return;
         }
@@ -79,7 +81,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         break;
     case CMD_ZFPGATEST_READ_WITH_TIMER:
         ui32Address = hexStringToInt(params[0]);
-        if (!lSeek(ui32Address, gDeviceFd)) {
+        if (!thisFile->lSeek(ui32Address)) {
             reportlSeekError();
             return;
         }
@@ -107,7 +109,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         break;
     case CMD_ZFPGATEST_WRITE_WITH_TIMER:
         ui32Address = hexStringToInt(params[0]);
-        if (!lSeek(ui32Address, gDeviceFd)) {
+        if (!thisFile->lSeek(ui32Address)) {
             reportlSeekError();
             return;
         }
@@ -155,11 +157,6 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         break;
 
     }
-}
-
-bool CmdHandlerZfpgaTest::lSeek(quint32 address, int fd)
-{
-    return (lseek(fd, address, SEEK_SET) >= 0);
 }
 
 void CmdHandlerZfpgaTest::reportlSeekError()

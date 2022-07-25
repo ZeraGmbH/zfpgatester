@@ -6,6 +6,7 @@ set(SOURCES
     cmdparserzfpgatest.cpp
     timer.cpp
     textfilehandler.cpp
+    filewrapper.cpp
 )
 
 set(HEADERS
@@ -14,6 +15,7 @@ set(HEADERS
     globals.h
     timer.h
     textfilehandler.h
+    filewrapper.h
 )
 
 add_library(${PROJECT_NAME}_lib STATIC
