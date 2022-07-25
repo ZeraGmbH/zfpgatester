@@ -8,6 +8,7 @@
 #include "cmdparserzfpgatest.h"
 #include "timer.h"
 #include "textfilehandler.h"
+#include "dataformatting.h"
 
 CmdHandlerZfpgaTest::CmdHandlerZfpgaTest(QObject *parent) : QSimpleCmdHandlerBase(parent)
 {
@@ -28,7 +29,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
     {
     case CMD_ZFPGATEST_READ:
     case CMD_ZFPGATEST_READ_ASCII:
-        ui32Address = hexStringToInt(params[0]);
+        ui32Address = DataFormatting::hexStringToInt(params[0].toString());
         if (!thisFile->lSeek(ui32Address)) {
             reportlSeekError();
             return;
@@ -62,13 +63,13 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         break;
     case CMD_ZFPGATEST_WRITE:
     case CMD_ZFPGATEST_WRITE_ASCII:
-        ui32Address = hexStringToInt(params[0]);
+        ui32Address = DataFormatting::hexStringToInt(params[0].toString());
         if (!thisFile->lSeek(ui32Address)) {
             reportlSeekError();
             return;
         }
         if(pCmd->GetCmdID() == CMD_ZFPGATEST_WRITE) {
-            writeData = stringToQBytes(params[1].toString());
+            writeData = DataFormatting::stringToQBytes(params[1].toString());
         }
         else {
             writeData = QSimpleCmdParserBase::BinaryFromAscii(params[1].toString());
@@ -80,7 +81,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
             emit OperationFinish(false, QString());
         break;
     case CMD_ZFPGATEST_READ_WITH_TIMER:
-        ui32Address = hexStringToInt(params[0]);
+        ui32Address = DataFormatting::hexStringToInt(params[0].toString());
         if (!thisFile->lSeek(ui32Address)) {
             reportlSeekError();
             return;
@@ -108,7 +109,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         emit OperationFinish(false, strResult);
         break;
     case CMD_ZFPGATEST_WRITE_WITH_TIMER:
-        ui32Address = hexStringToInt(params[0]);
+        ui32Address = DataFormatting::hexStringToInt(params[0].toString());
         if (!thisFile->lSeek(ui32Address)) {
             reportlSeekError();
             return;
@@ -126,7 +127,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
             return;
         }
 
-        writeData = stringToQBytes(fileData);
+        writeData = DataFormatting::stringToQBytes(fileData);
 
         quint32 iterations = params[3].toInt();
         std::vector<long> time_us;
@@ -162,20 +163,4 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
 void CmdHandlerZfpgaTest::reportlSeekError()
 {
     emit OperationFinish(true, QLatin1String("lseek did not succeed"));
-}
-
-quint32 CmdHandlerZfpgaTest::hexStringToInt(QVariant param)
-{
-    return param.toString().toInt(Q_NULLPTR, 16);
-}
-
-QByteArray CmdHandlerZfpgaTest::stringToQBytes(QString strData)
-{
-    strData = strData.replace(" ", "").replace("\n", "");
-    quint32 ui32Len = strData.size() / 2;
-    QByteArray intData;
-    for(quint32 ui32Byte=0; ui32Byte<ui32Len; ui32Byte++) {
-        intData.append(strData.mid(ui32Byte*2, 2).toInt(Q_NULLPTR, 16));
-    }
-    return intData;
 }

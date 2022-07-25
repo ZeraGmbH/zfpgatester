@@ -7,6 +7,7 @@ set(SOURCES
     timer.cpp
     textfilehandler.cpp
     filewrapper.cpp
+    dataformatting.cpp
 )
 
 set(HEADERS
@@ -16,6 +17,7 @@ set(HEADERS
     timer.h
     textfilehandler.h
     filewrapper.h
+    dataformatting.h
 )
 
 add_library(${PROJECT_NAME}_lib STATIC
