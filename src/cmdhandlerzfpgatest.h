@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QTcpSocket>
 #include <QSimpleCmdHandlerBase>
+#include "filewrapper.h"
 
 class CmdHandlerZfpgaTest : public QSimpleCmdHandlerBase
 {
@@ -19,7 +20,8 @@ signals:
 public slots:
 
 private:
-    bool lSeek(quint32 address, int fd);
+    std::shared_ptr<FileWrapper> thisFile;
+
     void reportlSeekError();
 
     quint32 hexStringToInt(QVariant param);
