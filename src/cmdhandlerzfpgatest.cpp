@@ -73,8 +73,8 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         }
         else {
             writeData = QSimpleCmdParserBase::BinaryFromAscii(params[1].toString());
-            ui32Len = writeData.size();
         }
+        ui32Len = writeData.size();
         if(write(gDeviceFd, writeData.data(), ui32Len) < 0)
             emit OperationFinish(true, QLatin1String("write did not succeed"));
         else
@@ -128,6 +128,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         }
 
         writeData = DataFormatting::stringToQBytes(fileData);
+        ui32Len = writeData.size();
 
         quint32 iterations = params[3].toInt();
         std::vector<long> time_us;
