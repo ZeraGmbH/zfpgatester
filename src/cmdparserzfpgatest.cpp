@@ -1,4 +1,5 @@
 #include "cmdparserzfpgatest.h"
+#include <QFile>
 
 CmdParserZfpgaTest::CmdParserZfpgaTest(QObject *parent) : QSimpleCmdParserSocketBase(parent)
 {
@@ -78,7 +79,6 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
     case CMD_ZFPGATEST_READ:
     case CMD_ZFPGATEST_READ_ASCII:
     case CMD_ZFPGATEST_READ_WITH_TIMER:
-    case CMD_ZFPGATEST_WRITE_WITH_TIMER:
         strAddrHex = params[0].toString();
         ui32Len = params[1].toInt();
         ui32Address = strAddrHex.toInt(&bConversionOK, 16);
@@ -112,6 +112,7 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
         break;
     case CMD_ZFPGATEST_WRITE:
     case CMD_ZFPGATEST_WRITE_ASCII:
+    case CMD_ZFPGATEST_WRITE_WITH_TIMER:
         strAddrHex = params[0].toString();
         ui32Address = strAddrHex.toInt(&bConversionOK, 16);
         if(bConversionOK)
@@ -136,6 +137,35 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
                 if(!isValidHexValue(strData, 0))
                 {
                     strCurrError = QString("Write data %1 is not valid hexadecimal").arg(params[1].toString());
+                    AppendErr(strErrInfo, strCurrError);
+                }
+                ui32Len = strData.size() / 2;
+            }
+            else if(pCmd->GetCmdID() == CMD_ZFPGATEST_WRITE_WITH_TIMER)
+            {
+                QString strData;
+                QFile inputDataFile(params[1].toString());
+                if (!inputDataFile.exists()) {
+                    strCurrError = QString("File %s doesn't exist").arg(params[1].toString());
+                    AppendErr(strErrInfo, strCurrError);
+                }
+                if(!inputDataFile.open(QIODevice::ReadOnly)) {
+                    strCurrError = QString("File %s couldn't be read").arg(params[1].toString());
+                    AppendErr(strErrInfo, strCurrError);
+                }
+                strData = inputDataFile.readAll();
+                inputDataFile.close();
+                strData = strData.replace(" ", "").replace("\n", "");
+
+                if(strData.size()%8 != 0)
+                {
+                    strCurrError = QString("Write data does not contain 32bit values only");
+                    AppendErr(strErrInfo, strCurrError);
+                }
+                // check correct hex for data
+                if(!isValidHexValue(strData, 0))
+                {
+                    strCurrError = QString("Write data is not valid hexadecimal");
                     AppendErr(strErrInfo, strCurrError);
                 }
                 ui32Len = strData.size() / 2;
