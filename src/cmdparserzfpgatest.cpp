@@ -42,9 +42,9 @@ CmdParserZfpgaTest::CmdParserZfpgaTest(QObject *parent) : QSimpleCmdParserSocket
     /* WriteWithTimer: Write data from a file to FPGA and measure time of this operation */
     /* Parameters: strHexAddress, iLen */
     /* Result: time measured */
-    AddCmdInfo("WriteWithTimer",
+    AddCmdInfo("WriteFileWithTimer",
                CmdParamTypeIdList() << PARAM_TYPE_STRING << PARAM_TYPE_STRING << PARAM_TYPE_INT,
-               CMD_ZFPGATEST_WRITE_WITH_TIMER,
+               CMD_ZFPGATEST_WRITE_FILE_WITH_TIMER,
                true,
                QLatin1String("Param: strHexAddress, strWriteDataFile, iTotalIterations"));
 }
@@ -103,7 +103,7 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
         break;
     case CMD_ZFPGATEST_WRITE:
     case CMD_ZFPGATEST_WRITE_ASCII:
-    case CMD_ZFPGATEST_WRITE_WITH_TIMER:
+    case CMD_ZFPGATEST_WRITE_FILE_WITH_TIMER:
         strAddrHex = params[0].toString();
         ui32Address = strAddrHex.toInt(&bConversionOK, 16);
         if(bConversionOK)
@@ -132,7 +132,7 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
                 }
                 ui32Len = strData.size() / 2;
             }
-            else if(pCmd->GetCmdID() == CMD_ZFPGATEST_WRITE_WITH_TIMER)
+            else if(pCmd->GetCmdID() == CMD_ZFPGATEST_WRITE_FILE_WITH_TIMER)
             {
                 QString strData;
                 QFile inputDataFile(params[1].toString());
