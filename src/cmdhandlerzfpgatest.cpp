@@ -7,7 +7,6 @@
 #include "cmdhandlerzfpgatest.h"
 #include "cmdparserzfpgatest.h"
 #include "timer.h"
-#include "textfilehandler.h"
 #include "dataformatting.h"
 
 CmdHandlerZfpgaTest::CmdHandlerZfpgaTest(QObject *parent) : QSimpleCmdHandlerBase(parent)
@@ -115,17 +114,18 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
             return;
         }
 
-        QString fileName = params[2].toString();
-        TextFileHandler inputDataFile(fileName, false);
-        QString fileData, strData;
-        if (!inputDataFile.fileExists()) {
+        QFile inputDataFile(params[2].toString());
+        if (!inputDataFile.exists()) {
             emit OperationFinish(true, QLatin1String("file doesn't exist"));
             return;
         }
-        if (!inputDataFile.readFile(fileData)) {
-            emit OperationFinish(true, QLatin1String("file could not be opened"));
+
+        if(!inputDataFile.open(QIODevice::ReadOnly)) {
+            emit OperationFinish(true, QLatin1String("file couldn't be read"));
             return;
         }
+        QString fileData = inputDataFile.readAll();
+        inputDataFile.close();
 
         writeData = DataFormatting::stringToQBytes(fileData);
         ui32Len = writeData.size();

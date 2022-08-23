@@ -8,7 +8,6 @@ if(NOT CMAKE_CROSSCOMPILING AND ${GTest_FOUND})
              COMMAND ${PROJECT_NAME}-unittest)
 
     set(TEST_SOURCES
-         unittest_filehandler.cpp
          unittest_filewrapper.cpp
      )
 
