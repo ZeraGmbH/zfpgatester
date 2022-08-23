@@ -50,10 +50,10 @@ CmdParserZfpgaTest::CmdParserZfpgaTest(QObject *parent) : QSimpleCmdParserSocket
     /* Parameters: strHexAddress, iLen */
     /* Result: time measured */
     AddCmdInfo("WriteWithTimer",
-               CmdParamTypeIdList() << PARAM_TYPE_STRING << PARAM_TYPE_INT << PARAM_TYPE_STRING << PARAM_TYPE_INT,
+               CmdParamTypeIdList() << PARAM_TYPE_STRING << PARAM_TYPE_STRING << PARAM_TYPE_INT,
                CMD_ZFPGATEST_WRITE_WITH_TIMER,
                true,
-               QLatin1String("Param: strHexAddress, iLen, strWriteDataFile, iTotalIterations"));
+               QLatin1String("Param: strHexAddress, strWriteDataFile, iTotalIterations"));
 }
 
 static void AppendErr(QString& strErrInfo, const QString& strCurrError)
