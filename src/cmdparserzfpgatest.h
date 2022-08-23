@@ -10,7 +10,7 @@ enum CmdZfpgaTestCmdIds
     CMD_ZFPGATEST_WRITE,
     CMD_ZFPGATEST_READ_ASCII,
     CMD_ZFPGATEST_WRITE_ASCII,
-    CMD_ZFPGATEST_WRITE_WITH_TIMER
+    CMD_ZFPGATEST_WRITE_FILE_WITH_TIMER
 };
 
 class CmdParserZfpgaTest : public QSimpleCmdParserSocketBase

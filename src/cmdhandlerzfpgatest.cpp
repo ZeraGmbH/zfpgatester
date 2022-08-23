@@ -79,7 +79,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         else
             emit OperationFinish(false, QString());
         break;
-    case CMD_ZFPGATEST_WRITE_WITH_TIMER:
+    case CMD_ZFPGATEST_WRITE_FILE_WITH_TIMER:
         ui32Address = DataFormatting::hexStringToInt(params[0].toString());
         if (!thisFile->lSeek(ui32Address)) {
             reportlSeekError();
