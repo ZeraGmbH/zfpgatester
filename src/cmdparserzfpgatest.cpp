@@ -39,14 +39,6 @@ CmdParserZfpgaTest::CmdParserZfpgaTest(QObject *parent) : QSimpleCmdParserSocket
                true,
                QLatin1String("Param: strHexAddress, strAsciiData\nstrAsciiData: ") + BinaryConversionHelpString());
 
-    /* ReadWithTimer: Read data from FPGA and measure time of this operation */
-    /* Parameters: strHexAddress, iLen */
-    /* Result: strHexData, time measured */
-    AddCmdInfo("ReadWithTimer",
-               CmdParamTypeIdList() << PARAM_TYPE_STRING << PARAM_TYPE_INT,
-               CMD_ZFPGATEST_READ_WITH_TIMER,
-               true,
-               QLatin1String("Param: strHexAddress, iLen\nResult strHexData"));
     /* WriteWithTimer: Write data from a file to FPGA and measure time of this operation */
     /* Parameters: strHexAddress, iLen */
     /* Result: time measured */
@@ -78,7 +70,6 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
     {
     case CMD_ZFPGATEST_READ:
     case CMD_ZFPGATEST_READ_ASCII:
-    case CMD_ZFPGATEST_READ_WITH_TIMER:
         strAddrHex = params[0].toString();
         ui32Len = params[1].toInt();
         ui32Address = strAddrHex.toInt(&bConversionOK, 16);

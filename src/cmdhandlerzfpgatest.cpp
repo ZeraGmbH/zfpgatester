@@ -79,34 +79,6 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         else
             emit OperationFinish(false, QString());
         break;
-    case CMD_ZFPGATEST_READ_WITH_TIMER:
-        ui32Address = DataFormatting::hexStringToInt(params[0].toString());
-        if (!thisFile->lSeek(ui32Address)) {
-            reportlSeekError();
-            return;
-        }
-        ui32Len = params[1].toInt();
-        readData.resize(ui32Len);
-
-        readTime.start();
-        if(read(gDeviceFd, readData.data(), ui32Len) < 0) {
-            emit OperationFinish(true, QLatin1String("read did not succeed"));
-            return;
-        }
-        readTime.stop();
-
-        for(int iByte=0; iByte<readData.size(); iByte++) {
-            strByteData.sprintf("%02X", (quint8)readData[iByte]);
-            strResult += strByteData;
-            if(iByte%4 == 3)
-                strResult += QLatin1String(" ");
-        }
-
-        strByteData.sprintf("\nTime taken: %ld us", readTime.getTimeSteadyClock_us());
-        strResult += strByteData;
-
-        emit OperationFinish(false, strResult);
-        break;
     case CMD_ZFPGATEST_WRITE_WITH_TIMER:
         ui32Address = DataFormatting::hexStringToInt(params[0].toString());
         if (!thisFile->lSeek(ui32Address)) {
