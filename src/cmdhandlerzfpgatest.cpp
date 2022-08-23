@@ -114,23 +114,15 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
             return;
         }
 
-        QFile inputDataFile(params[2].toString());
-        if (!inputDataFile.exists()) {
-            emit OperationFinish(true, QLatin1String("file doesn't exist"));
-            return;
-        }
-
-        if(!inputDataFile.open(QIODevice::ReadOnly)) {
-            emit OperationFinish(true, QLatin1String("file couldn't be read"));
-            return;
-        }
+        QFile inputDataFile(params[1].toString());
+        inputDataFile.open(QIODevice::ReadOnly);
         QString fileData = inputDataFile.readAll();
         inputDataFile.close();
 
         writeData = DataFormatting::stringToQBytes(fileData);
         ui32Len = writeData.size();
 
-        quint32 iterations = params[3].toInt();
+        quint32 iterations = params[2].toInt();
         std::vector<long> time_us;
         long avgTime_us = 0;
         for(quint32 i=0; i<iterations; i++) {
