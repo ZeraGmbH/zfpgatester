@@ -5,7 +5,6 @@ set(SOURCES
     cmdhandlerzfpgatest.cpp
     cmdparserzfpgatest.cpp
     timer.cpp
-    textfilehandler.cpp
     filewrapper.cpp
     dataformatting.cpp
 )
@@ -15,7 +14,6 @@ set(HEADERS
     cmdparserzfpgatest.h
     globals.h
     timer.h
-    textfilehandler.h
     filewrapper.h
     dataformatting.h
 )
