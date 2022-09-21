@@ -2,7 +2,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(GTest)
 
-if(NOT CMAKE_CROSSCOMPILING AND ${GTest_FOUND})
+if(${GTest_FOUND})
 
     add_test(NAME    ${PROJECT_NAME}-unittest
              COMMAND ${PROJECT_NAME}-unittest)
