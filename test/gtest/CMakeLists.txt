@@ -1,30 +1,26 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(GTest)
+find_package(GTest REQUIRED)
 
-if(${GTest_FOUND})
+add_test(NAME    ${PROJECT_NAME}-unittest
+         COMMAND ${PROJECT_NAME}-unittest)
 
-    add_test(NAME    ${PROJECT_NAME}-unittest
-             COMMAND ${PROJECT_NAME}-unittest)
+set(TEST_SOURCES
+     unittest_filewrapper.cpp
+ )
 
-    set(TEST_SOURCES
-         unittest_filewrapper.cpp
-     )
+add_executable(${PROJECT_NAME}-unittest
+    ${TEST_SOURCES}
+    )
 
-    add_executable(${PROJECT_NAME}-unittest
-        ${TEST_SOURCES}
-        )
+target_include_directories(${PROJECT_NAME}-unittest
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
 
-    target_include_directories(${PROJECT_NAME}-unittest
-        PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-        )
-
-    target_link_libraries(${PROJECT_NAME}-unittest
-        PRIVATE
-        gtest
-        gtest_main
-        ${PROJECT_NAME}_lib
-        )
-
-endif()
+target_link_libraries(${PROJECT_NAME}-unittest
+    PRIVATE
+    gtest
+    gtest_main
+    ${PROJECT_NAME}_lib
+    )
