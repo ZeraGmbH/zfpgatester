@@ -1,15 +1,5 @@
 #include "timer.h"
 
-Timer::Timer()
-{
-
-}
-
-Timer::~Timer()
-{
-
-}
-
 void Timer::start()
 {
     m_start_HighResolutionClock = std::chrono::high_resolution_clock::now();

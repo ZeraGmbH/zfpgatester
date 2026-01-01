@@ -20,7 +20,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
     QByteArray writeData;
     QByteArray readData;
     QString strResult, strByteData;
-    Timer readTime, writeTime;
+    Timer writeTime;
 
     thisFile = std::make_shared<FileWrapper>(gDeviceFd);
 
@@ -117,9 +117,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         strByteData = QString::asprintf("\nTime taken:\tAverage %ld us,\tMin %ld us,\tMax %ld us", avgTime_us, *minmaxTime.first, *minmaxTime.second);
         strResult += strByteData;
 
-
         emit OperationFinish(false, strResult);
-
         break;
 
     }

@@ -12,17 +12,10 @@ class CmdHandlerZfpgaTest : public QSimpleCmdHandlerBase
     Q_OBJECT
 public:
     explicit CmdHandlerZfpgaTest(QObject *parent = 0);
-    virtual void StartCmd(SimpleCmdData *pCmd, QVariantList params);
-
-signals:
-
-public slots:
-
+    virtual void StartCmd(SimpleCmdData *pCmd, QVariantList params) override;
 private:
-    std::shared_ptr<FileWrapper> thisFile;
-
     void reportlSeekError();
-
+    std::shared_ptr<FileWrapper> thisFile;
 };
 
 #endif // CMDHANDERZFPGATEST_H

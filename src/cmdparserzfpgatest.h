@@ -2,7 +2,6 @@
 #define CMDPARSERZFPGATEST_H
 
 #include <QSimpleCmdParserSocketBase>
-#include "cmdhandlerzfpgatest.h"
 
 enum CmdZfpgaTestCmdIds
 {
@@ -18,14 +17,9 @@ class CmdParserZfpgaTest : public QSimpleCmdParserSocketBase
     Q_OBJECT
 public:
     explicit CmdParserZfpgaTest(QObject *parent = NULL);
-    virtual QString GetParserName() { return QLatin1String("ZfpgaTest"); }
-
-signals:
-
+    virtual QString GetParserName() override { return QLatin1String("ZfpgaTest"); }
 protected:
-    virtual const QString PlausiCheck(SimpleCmdData *pCmd, const QVariantList &params);
-
-private:
+    virtual const QString PlausiCheck(SimpleCmdData *pCmd, const QVariantList &params) override;
 };
 
 #endif // CMDPARSERZFPGATEST_H

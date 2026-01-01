@@ -6,8 +6,7 @@
 class FileWrapper
 {
 public:
-    FileWrapper(int fileDescriptor);
-
+    explicit FileWrapper(int fileDescriptor);
     bool lSeek(quint32 address);
 
 private:
