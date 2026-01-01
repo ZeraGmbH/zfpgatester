@@ -25,7 +25,7 @@ void unittest_dataformatting::testStringToQBytes_data()
     QTest::newRow("Four Bytes with no spaces") << "32344455" << res;
     QTest::newRow("Four Bytes with new line") << "3234\n4455" << res;
     res = ("\x67\x55\x23\x78\x11\x22\x33\x44");
-    QTest::newRow("Four Bytes with no spaces") << "6755237811223344" << res;
+    QTest::newRow("Four Bytes with no spaces II") << "6755237811223344" << res;
     QTest::newRow("Four Bytes with spaces") << "67552378 11223344" << res;
 }
 
@@ -42,9 +42,7 @@ void unittest_dataformatting::testHexStringToInt_data()
     QTest::addColumn<QString>("string1");
     QTest::addColumn<quint32>("result1");
 
-    QVariant param = "0001";
-    quint32 res = 1;
-    QTest::newRow("String 22") << "0000" << static_cast<quint32>(0);
-    QTest::newRow("String 22") << "0022" << static_cast<quint32>(34);
-    QTest::newRow("String 22") << "1000" << static_cast<quint32>(4096);
+    QTest::newRow("String 0000") << "0000" << static_cast<quint32>(0);
+    QTest::newRow("String 0022") << "0022" << static_cast<quint32>(34);
+    QTest::newRow("String 1000") << "1000" << static_cast<quint32>(4096);
 }
