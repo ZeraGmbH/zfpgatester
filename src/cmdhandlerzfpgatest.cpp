@@ -41,7 +41,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         }
         if(pCmd->GetCmdID() == CMD_ZFPGATEST_READ) {
             for(int iByte=0; iByte<readData.size(); iByte++) {
-                strByteData.sprintf("%02X", (quint8)readData[iByte]);
+                strByteData = QString::asprintf("%02X", (quint8)readData[iByte]);
                 strResult += strByteData;
                 if(iByte%4 == 3)
                     strResult += QLatin1String(" ");
@@ -50,10 +50,10 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         else {
             for(int iByte=0; iByte<readData.size(); iByte++) {
                 if((quint8)readData[iByte] >= 32 && (quint8)readData[iByte] < 127) {
-                    strByteData.sprintf("%c", (int)readData[iByte]);
+                    strByteData = QString::asprintf("%c", (int)readData[iByte]);
                 }
                 else {
-                    strByteData.sprintf("<0x%02X>", (quint8)readData[iByte]);
+                    strByteData = QString::asprintf("<0x%02X>", (quint8)readData[iByte]);
                 }
                 strResult += strByteData;
             }
@@ -105,7 +105,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
             }
             writeTime.stop();
             time_us.push_back(writeTime.getTimeHighResolution_us());
-            strByteData.sprintf("\nTime taken: %ld us", writeTime.getTimeHighResolution_us());
+            strByteData = QString::asprintf("\nTime taken: %ld us", writeTime.getTimeHighResolution_us());
             strResult += strByteData;
         }
         auto minmaxTime = std::minmax_element(time_us.begin(), time_us.end());
@@ -114,7 +114,7 @@ void CmdHandlerZfpgaTest::StartCmd(SimpleCmdData *pCmd, QVariantList params)
         }
         avgTime_us /= time_us.size();
 
-        strByteData.sprintf("\nTime taken:\tAverage %ld us,\tMin %ld us,\tMax %ld us", avgTime_us, *minmaxTime.first, *minmaxTime.second);
+        strByteData = QString::asprintf("\nTime taken:\tAverage %ld us,\tMin %ld us,\tMax %ld us", avgTime_us, *minmaxTime.first, *minmaxTime.second);
         strResult += strByteData;
 
 

@@ -90,7 +90,7 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
             // check address / len limits
             if(ui32Address + ui32Len > ui32MaxAddress)
             {
-                strCurrError.sprintf("Maximum address accessed 0x%04X exceeds maximum 0x%04X",
+                strCurrError = QString::asprintf("Maximum address accessed 0x%04X exceeds maximum 0x%04X",
                                    ui32Address + ui32Len, ui32MaxAddress);
                 AppendErr(strErrInfo, strCurrError);
             }
@@ -175,7 +175,7 @@ const QString CmdParserZfpgaTest::PlausiCheck(SimpleCmdData *pCmd, const QVarian
             // check address / datalen limits
             if(ui32Address + ui32Len > ui32MaxAddress)
             {
-                strCurrError.sprintf("Maximum address accessed 0x%04X exceeds maximum 0x%04X",
+                strCurrError = QString::asprintf("Maximum address accessed 0x%04X exceeds maximum 0x%04X",
                                    ui32Address + ui32Len, ui32MaxAddress);
                 AppendErr(strErrInfo, strCurrError);
             }
