@@ -11,7 +11,7 @@ TEST(FILE_WRAPPER, lSeekNonexistingFile)
 TEST(FILE_WRAPPER, lSeekExistingFile)
 {
     QTemporaryFile testFile("Test.txt");
-    testFile.open();
+    EXPECT_TRUE(testFile.open());
     FileWrapper testFileWrapper(testFile.handle());
     EXPECT_TRUE(testFileWrapper.lSeek(0));
 }
